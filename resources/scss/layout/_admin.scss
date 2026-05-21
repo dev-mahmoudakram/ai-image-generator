@@ -1,0 +1,18 @@
+@use '../abstracts/mixins' as *;
+
+.admin-shell {
+    display: grid;
+    grid-template-columns: 240px 1fr;
+    min-height: 100vh;
+}
+.admin-sidebar {
+    background: var(--color-surface);
+    border-right: 1px solid var(--color-border);
+    padding: var(--space-5);
+}
+.admin-main { padding: var(--space-5); }
+
+@media (max-width: 768px) {
+    .admin-shell { grid-template-columns: 1fr; }
+    .admin-sidebar { border-right: 0; border-bottom: 1px solid var(--color-border); }
+}

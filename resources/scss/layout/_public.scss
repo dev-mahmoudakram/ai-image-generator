@@ -1,0 +1,10 @@
+@use '../abstracts/mixins' as *;
+
+.public-shell {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+.public-header,
+.public-footer { @include container; padding-block: var(--space-4); }
+.public-main   { @include container; flex: 1; padding-block: var(--space-6); }

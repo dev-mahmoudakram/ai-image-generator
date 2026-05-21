@@ -1,0 +1,37 @@
+@use '../abstracts/mixins' as *;
+
+.field { margin-bottom: var(--space-4); }
+.field__label {
+    display: block;
+    margin-bottom: var(--space-2);
+    font-size: 14px;
+    color: var(--color-text-dim);
+}
+.field__input,
+.field__textarea {
+    width: 100%;
+    background: var(--color-surface);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius);
+    color: var(--color-text);
+    padding: 12px 14px;
+    transition: border-color var(--transition);
+
+    &:focus { outline: none; border-color: var(--color-primary); }
+    &::placeholder { color: var(--color-text-dim); opacity: 0.7; }
+}
+.field__error {
+    margin-top: var(--space-2);
+    font-size: 13px;
+    color: var(--color-danger);
+}
+
+.checkbox {
+    display: flex;
+    align-items: flex-start;
+    gap: var(--space-2);
+    font-size: 14px;
+    color: var(--color-text-dim);
+    cursor: pointer;
+    input { margin-top: 4px; }
+}

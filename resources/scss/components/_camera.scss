@@ -1,0 +1,19 @@
+.camera {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-3);
+}
+.camera__preview {
+    width: 100%;
+    aspect-ratio: 1;
+    object-fit: cover;
+    background: #000;
+    border-radius: var(--radius-lg);
+    border: 1px solid var(--color-border);
+}
+.camera__actions {
+    display: flex;
+    gap: var(--space-3);
+    flex-wrap: wrap;
+}
+.camera__error { color: var(--color-danger); font-size: 14px; }
