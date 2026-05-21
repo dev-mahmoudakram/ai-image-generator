@@ -4,12 +4,13 @@ use App\Http\Controllers\Admin\AuthController;
 use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Admin\SubmissionController as AdminSubmissionController;
 use App\Http\Controllers\Admin\TemplateController as AdminTemplateController;
-use App\Http\Controllers\PublicController;
+use App\Livewire\SubmissionStatus;
+use App\Livewire\SubmissionWizard;
 use Illuminate\Support\Facades\Route;
 
 // Public
-Route::get('/', [PublicController::class, 'generate'])->name('home');
-Route::get('/submissions/{token}', [PublicController::class, 'track'])
+Route::get('/', SubmissionWizard::class)->name('home');
+Route::get('/submissions/{token}', SubmissionStatus::class)
     ->name('submission.track')
     ->where('token', '[a-zA-Z0-9]{48}');
 

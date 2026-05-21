@@ -6,6 +6,14 @@
     box-shadow: var(--shadow);
 }
 .card__title { margin-bottom: var(--space-3); }
+.template-card {
+    cursor: pointer;
+    text-align: left;
+    width: 100%;
+    transition: border-color var(--transition);
+    &:hover { border-color: var(--color-primary); }
+}
+
 .card__divider {
     height: 1px;
     background: var(--color-border);
