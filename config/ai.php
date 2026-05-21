@@ -26,6 +26,8 @@ return [
     'image_timeout' => (int) env('AI_IMAGE_TIMEOUT', 120),
     'image_quality' => env('AI_IMAGE_QUALITY', 'high'),
 
+    'generate_per_hour' => (int) env('PUBLIC_GENERATE_PER_HOUR', 5),
+
     'upload' => [
         'max_kb' => 8192,
         'mimes'  => ['jpg', 'jpeg', 'png', 'webp'],
