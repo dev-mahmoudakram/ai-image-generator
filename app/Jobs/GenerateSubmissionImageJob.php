@@ -28,6 +28,8 @@ class GenerateSubmissionImageJob implements ShouldQueue
         ImageStorageService $storage,
         SubmissionService $submissionService,
     ): void {
+        set_time_limit(180);
+
         $submission = Submission::with(['selfie', 'template'])->findOrFail($this->submissionId);
 
         if ($submission->status !== SubmissionStatus::Queued) {
