@@ -14,7 +14,7 @@ return [
     */
 
     'default' => 'gemini',
-    'default_for_images' => 'gemini',
+    'default_for_images' => env('AI_PROVIDER', 'gemini'),  // 'gemini' or 'huggingface'
 
     /*
     |--------------------------------------------------------------------------
@@ -22,11 +22,23 @@ return [
     |--------------------------------------------------------------------------
     */
 
-    'image_model'   => env('AI_IMAGE_MODEL', 'gemini-2.5-flash-image'),
+    'image_model'   => env('AI_IMAGE_MODEL', 'gemini-3-pro-image-preview'),
     'image_timeout' => (int) env('AI_IMAGE_TIMEOUT', 120),
     'image_quality' => env('AI_IMAGE_QUALITY', 'high'),
 
     'generate_per_hour' => (int) env('PUBLIC_GENERATE_PER_HOUR', 5),
+
+    'huggingface' => [
+        'token'   => env('HF_TOKEN'),
+        'model'   => env('HF_MODEL', 'timbrooks/instruct-pix2pix'),
+        'timeout' => (int) env('HF_TIMEOUT', 120),
+    ],
+
+    'pollinations' => [
+        'model'  => env('POLLINATIONS_MODEL', 'flux-realism'),
+        'width'  => (int) env('POLLINATIONS_WIDTH', 1024),
+        'height' => (int) env('POLLINATIONS_HEIGHT', 1024),
+    ],
 
     'upload' => [
         'max_kb' => 8192,

@@ -2,18 +2,33 @@
 
 namespace App\Services\Ai;
 
+use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Storage;
 use Laravel\Ai\Enums\Lab;
 use Laravel\Ai\Files\Image as AiImage;
 use Laravel\Ai\Image;
+use RuntimeException;
 
 class AiImageGenerationService
 {
     public function generate(GenerationRequest $request): GenerationResult
     {
         $provider = config('ai.default_for_images', 'gemini');
-        $model    = config('ai.image_model', 'gemini-2.0-flash-preview-image-generation');
-        $timeout  = (int) config('ai.image_timeout', 120);
-        $quality  = config('ai.image_quality', 'high');
+
+        return match ($provider) {
+            'huggingface' => $this->generateWithHuggingFace($request),
+            'pollinations' => $this->generateWithPollinations($request),
+            default        => $this->generateWithGemini($request),
+        };
+    }
+
+    // ── Gemini (Laravel AI SDK) ───────────────────────────────────────────────
+
+    private function generateWithGemini(GenerationRequest $request): GenerationResult
+    {
+        $model   = config('ai.image_model', 'gemini-2.0-flash-preview-image-generation');
+        $timeout = (int) config('ai.image_timeout', 120);
+        $quality = config('ai.image_quality', 'high');
 
         $response = Image::of($request->prompt)
             ->attachments([
@@ -22,15 +37,91 @@ class AiImageGenerationService
             ])
             ->quality($quality)
             ->timeout($timeout)
-            ->generate(Lab::from($provider), $model);
+            ->generate(Lab::from('gemini'), $model);
+
+        if ($response->count() === 0) {
+            throw new RuntimeException(
+                "Gemini returned no images using model [{$model}]. " .
+                "Verify the model name supports image output and that the request was not filtered."
+            );
+        }
 
         return new GenerationResult(
-            response: $response,
-            provider: $provider,
-            model:    $model,
-            prompt:   $request->prompt,
+            provider:   'gemini',
+            model:      $model,
+            prompt:     $request->prompt,
+            response:   $response,
         );
     }
+
+    // ── HuggingFace Inference API ─────────────────────────────────────────────
+
+    private function generateWithHuggingFace(GenerationRequest $request): GenerationResult
+    {
+        $token   = config('ai.huggingface.token');
+        $model   = config('ai.huggingface.model', 'timbrooks/instruct-pix2pix');
+        $timeout = (int) config('ai.huggingface.timeout', 120);
+
+        if (empty($token)) {
+            throw new RuntimeException('HuggingFace token is not configured (HF_TOKEN).');
+        }
+
+        $imageBytes = Storage::disk($request->selfieDisk)->get($request->selfiePath);
+        $base64     = base64_encode($imageBytes);
+
+        $response = Http::withToken($token)
+            ->timeout($timeout)
+            ->post("https://router.huggingface.co/hf-inference/models/{$model}", [
+                'inputs'     => $base64,
+                'parameters' => [
+                    'prompt'               => $request->prompt,
+                    'num_inference_steps'  => 25,
+                    'image_guidance_scale' => 1.5,
+                    'guidance_scale'       => 7.5,
+                ],
+            ]);
+
+        if ($response->failed()) {
+            $body = $response->json();
+            $error = $body['error'] ?? $response->body();
+            throw new RuntimeException("HuggingFace API error: {$error}");
+        }
+
+        return new GenerationResult(
+            provider:   'huggingface',
+            model:      $model,
+            prompt:     $request->prompt,
+            imageBytes: $response->body(),
+        );
+    }
+
+    // ── Pollinations.ai (free, no key) ───────────────────────────────────────
+
+    private function generateWithPollinations(GenerationRequest $request): GenerationResult
+    {
+        $model  = config('ai.pollinations.model', 'flux-realism');
+        $width  = (int) config('ai.pollinations.width', 1024);
+        $height = (int) config('ai.pollinations.height', 1024);
+        $seed   = random_int(1, 999999);
+
+        $url = 'https://image.pollinations.ai/prompt/' . rawurlencode($request->prompt)
+             . "?width={$width}&height={$height}&model={$model}&seed={$seed}&nologo=true";
+
+        $response = Http::timeout(90)->get($url);
+
+        if ($response->failed()) {
+            throw new RuntimeException("Pollinations error {$response->status()}: {$response->body()}");
+        }
+
+        return new GenerationResult(
+            provider:   'pollinations',
+            model:      $model,
+            prompt:     $request->prompt,
+            imageBytes: $response->body(),
+        );
+    }
+
+    // ── Prompt builder ────────────────────────────────────────────────────────
 
     public function buildPrompt(string $promptHint = ''): string
     {

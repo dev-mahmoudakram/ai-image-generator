@@ -12,7 +12,7 @@
 </head>
 <body class="public-shell">
 
-    <header class="public-header">
+    {{-- <header class="public-header">
         <a href="{{ route('home') }}" class="brand-mark" aria-label="{{ config('app.name') }}">
             <span class="brand-mark__seal" aria-hidden="true">م</span>
             <span>
@@ -20,7 +20,7 @@
                 <span class="brand-mark__sub">Saudi Portrait Experience</span>
             </span>
         </a>
-    </header>
+    </header> --}}
 
     <main class="public-main">
         @isset($slot)

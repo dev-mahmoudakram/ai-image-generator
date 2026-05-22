@@ -52,7 +52,9 @@ class GenerateSubmissionImageJob implements ShouldQueue
             'attempt_no'      => $submission->nextAttemptNo(),
             'status'          => 'processing',
             'provider'        => config('ai.default_for_images', 'gemini'),
-            'model'           => config('ai.image_model'),
+            'model'           => config('ai.default_for_images') === 'huggingface'
+                                    ? config('ai.huggingface.model')
+                                    : config('ai.image_model'),
             'prompt'          => $prompt,
             'selfie_asset_id' => $selfie->id,
             'started_at'      => now(),
@@ -70,7 +72,9 @@ class GenerateSubmissionImageJob implements ShouldQueue
                 prompt:       $prompt,
             ));
 
-            $generatedAsset = $storage->storeGeneratedImage($submission, $result->response);
+            $generatedAsset = $result->response !== null
+                ? $storage->storeGeneratedImage($submission, $result->response)
+                : $storage->storeRawImage($submission, $result->imageBytes);
 
             $attempt->update([
                 'status'             => 'completed',

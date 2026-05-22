@@ -38,7 +38,7 @@ class ImageStorageService
         ]);
     }
 
-    // ── Generated image ───────────────────────────────────────────────────────
+    // ── Generated image (Gemini / Laravel AI SDK) ─────────────────────────────
 
     public function storeGeneratedImage(Submission $submission, ImageResponse $response): SubmissionAsset
     {
@@ -56,6 +56,30 @@ class ImageStorageService
             'path'       => $path,
             'mime_type'  => 'image/png',
             'size_bytes' => filesize($fullPath),
+            'width'      => $width,
+            'height'     => $height,
+        ]);
+    }
+
+    // ── Generated image (HuggingFace / raw bytes) ─────────────────────────────
+
+    public function storeRawImage(Submission $submission, string $bytes): SubmissionAsset
+    {
+        $dir  = "submissions/{$submission->uuid}";
+        $name = 'generated_' . now()->timestamp . '.png';
+        $path = "{$dir}/{$name}";
+
+        Storage::disk(self::DISK)->put($path, $bytes);
+
+        $fullPath = Storage::disk(self::DISK)->path($path);
+        [$width, $height] = $this->imageDimensions($fullPath);
+
+        return $submission->assets()->create([
+            'kind'       => 'generated',
+            'disk'       => self::DISK,
+            'path'       => $path,
+            'mime_type'  => 'image/png',
+            'size_bytes' => strlen($bytes),
             'width'      => $width,
             'height'     => $height,
         ]);

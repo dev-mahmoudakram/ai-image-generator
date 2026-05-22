@@ -24,7 +24,10 @@
                     <h2 id="form-title">Your information</h2>
                     <p>We use these details to prepare and track your portrait request.</p>
 
-                    <form wire:submit="submitForm" novalidate>
+                    <form novalidate x-data x-on:submit.prevent="
+                        if (window.__syncPhone) await window.__syncPhone();
+                        $wire.submitForm();
+                    ">
                         <div class="field">
                             <label class="field__label" for="name">Full name</label>
                             <input
@@ -38,22 +41,22 @@
                             @error('name') <p class="field__error">{{ $message }}</p> @enderror
                         </div>
 
-                        <div class="field">
+                        <div class="field field--phone">
                             <label class="field__label" for="phone">Phone number</label>
-                            <input
-                                class="field__input"
-                                type="tel"
-                                id="phone"
-                                wire:model.blur="phone"
-                                autocomplete="tel"
-                                placeholder="+966 5X XXX XXXX"
-                                dir="ltr"
-                            >
+                            <div x-data="phoneInput" wire:ignore>
+                                <input
+                                    x-ref="input"
+                                    class="field__input"
+                                    type="tel"
+                                    id="phone"
+                                    autocomplete="tel"
+                                >
+                            </div>
                             @error('phone') <p class="field__error">{{ $message }}</p> @enderror
                         </div>
 
                         <div class="field">
-                            <label class="field__label" for="email">Email <span style="font-weight:600;">(optional)</span></label>
+                            <label class="field__label" for="email">Email <span style="font-weight:400;opacity:0.6;">(optional)</span></label>
                             <input
                                 class="field__input"
                                 type="email"
