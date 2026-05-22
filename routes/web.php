@@ -4,12 +4,16 @@ use App\Http\Controllers\Admin\AuthController;
 use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Admin\SubmissionController as AdminSubmissionController;
 use App\Http\Controllers\Admin\TemplateController as AdminTemplateController;
+use App\Http\Controllers\SubmissionSelfieController;
 use App\Livewire\SubmissionStatus;
 use App\Livewire\SubmissionWizard;
 use Illuminate\Support\Facades\Route;
 
 // Public
 Route::get('/', SubmissionWizard::class)->name('home');
+Route::post('/submissions/{token}/selfie', SubmissionSelfieController::class)
+    ->name('submission.selfie.store')
+    ->where('token', '[a-zA-Z0-9]{48}');
 Route::get('/submissions/{token}', SubmissionStatus::class)
     ->name('submission.track')
     ->where('token', '[a-zA-Z0-9]{48}');
@@ -28,6 +32,7 @@ Route::prefix('admin')->name('admin.')->middleware(['auth', 'ensure.admin'])->gr
     Route::get('submissions', [AdminSubmissionController::class, 'index'])->name('submissions.index');
     Route::get('submissions/{submission}', [AdminSubmissionController::class, 'show'])->name('submissions.show');
     Route::post('submissions/{submission}/retry', [AdminSubmissionController::class, 'retry'])->name('submissions.retry');
+    Route::post('submissions/{submission}/cancel', [AdminSubmissionController::class, 'cancel'])->name('submissions.cancel');
 
     Route::get('templates', [AdminTemplateController::class, 'index'])->name('templates.index');
     Route::get('templates/create', [AdminTemplateController::class, 'create'])->name('templates.create');

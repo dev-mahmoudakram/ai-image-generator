@@ -1,7 +1,80 @@
-body { font-size: 15px; line-height: 1.55; }
-h1, h2, h3, h4 { margin: 0 0 var(--space-3); font-weight: 600; letter-spacing: -0.01em; }
-h1 { font-size: clamp(28px, 5vw, 44px); line-height: 1.1; }
-h2 { font-size: clamp(22px, 3.2vw, 30px); }
-h3 { font-size: 20px; }
-p  { margin: 0 0 var(--space-3); color: var(--color-text-dim); }
-small { color: var(--color-text-dim); }
+h1, h2, h3, h4, h5 {
+    margin: 0 0 var(--space-3);
+    font-weight: 700;
+    letter-spacing: -0.005em;
+    color: var(--color-text);
+    line-height: 1.2;
+}
+
+h1 { font-size: clamp(30px, 4.5vw, 52px); letter-spacing: -0.01em; }
+h2 { font-size: clamp(20px, 3vw, 32px); letter-spacing: -0.008em; }
+h3 { font-size: clamp(17px, 2.2vw, 21px); }
+h4 { font-size: 16px; font-weight: 800; letter-spacing: 0; }
+
+p {
+    margin: 0 0 var(--space-3);
+    color: var(--color-text-dim);
+    line-height: 1.7;
+}
+
+p:last-child { margin-bottom: 0; }
+
+small { font-size: 13px; color: var(--color-text-dim); }
+
+code, kbd {
+    font-family: 'Fira Code', 'Cascadia Code', 'Courier New', monospace;
+    font-size: 0.875em;
+    background: var(--color-surface-2);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-xs);
+    padding: 1px 6px;
+    color: var(--color-primary);
+}
+
+// ── Eyebrow label above headings ──────────────────────────────────────────────
+.eyebrow {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    color: var(--color-gold-2);
+    font-size: 11px;
+    font-weight: 800;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    margin-bottom: var(--space-2);
+
+    &::before {
+        content: '';
+        display: inline-block;
+        width: 20px;
+        height: 2px;
+        background: linear-gradient(90deg, var(--color-gold), transparent);
+        border-radius: 2px;
+        flex-shrink: 0;
+    }
+}
+
+// ── Lead paragraph ────────────────────────────────────────────────────────────
+.lead {
+    font-size: clamp(16px, 1.8vw, 18px);
+    line-height: 1.75;
+    color: var(--color-text-dim);
+}
+
+// ── Field label utility ───────────────────────────────────────────────────────
+.label {
+    display: block;
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--color-text-dim);
+    letter-spacing: 0.02em;
+}
+
+// ── Gold rule ─────────────────────────────────────────────────────────────────
+.gold-rule {
+    border: 0;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, var(--color-gold), transparent);
+    margin: var(--space-5) 0;
+    opacity: 0.5;
+}

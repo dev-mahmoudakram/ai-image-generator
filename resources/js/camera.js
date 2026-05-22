@@ -1,25 +1,31 @@
 /**
  * Alpine camera capture component.
  *
- * Handles: permission request, live preview, capture-to-blob,
- * stream teardown. Hands the resulting File to Livewire via
- * `@this.upload('selfie', file)`.
+ * Handles: permission request, live preview, capture-to-blob, stream teardown.
+ * Hands the resulting File to Livewire via $wire.upload('selfie', file, ...).
  *
- * Public API (used from Blade):
- *   x-data="cameraCapture"
- *   x-ref="video"
- *   x-ref="canvas"
- *   @click="start" / "capture" / "retake" / "stop"
- *   x-show / x-text bindings against: streaming, captured, error
+ * x-ref bindings expected: video, canvas
+ * Exposes: streaming, captured, uploading, uploadProgress, error, cameraAvailable
  */
-export default function cameraCapture() {
+export default function cameraCapture($wire = null) {
     return {
-        stream: null,
-        streaming: false,
-        captured: false,
-        error: '',
+        stream:          null,
+        streaming:       false,
+        captured:        false,
+        uploading:       false,
+        uploadProgress:  0,
+        error:           '',
+        cameraAvailable: true,   // set false on init if getUserMedia is missing
 
         init() {
+            // Check for camera API availability up-front so the UI can adapt
+            if (!navigator.mediaDevices?.getUserMedia) {
+                this.cameraAvailable = false;
+                this.error = window.isSecureContext === false
+                    ? 'Camera requires a secure connection (HTTPS or localhost).'
+                    : 'Camera capture is not supported in this browser.';
+            }
+
             this.boundStop = () => this.stop();
             window.addEventListener('beforeunload', this.boundStop);
         },
@@ -30,17 +36,11 @@ export default function cameraCapture() {
         },
 
         async start() {
+            if (!this.cameraAvailable) return;
             this.error = '';
             try {
-                if (!navigator.mediaDevices?.getUserMedia) {
-                    throw new Error('UNSUPPORTED');
-                }
                 this.stream = await navigator.mediaDevices.getUserMedia({
-                    video: {
-                        facingMode: 'user',
-                        width:  { ideal: 1280 },
-                        height: { ideal: 1280 },
-                    },
+                    video: { facingMode: 'user', width: { ideal: 1280 }, height: { ideal: 1280 } },
                     audio: false,
                 });
                 const video = this.$refs.video;
@@ -68,15 +68,16 @@ export default function cameraCapture() {
                     return;
                 }
                 const file = new File([blob], 'selfie.jpg', { type: 'image/jpeg' });
-                this.$wire.upload('selfie', file, () => {
-                    this.captured = true;
-                    this.stop();
-                });
+                this.captured = true;
+                this.stop();
+                this._upload(file);
             }, 'image/jpeg', 0.92);
         },
 
         retake() {
+            if (this.uploading) return;
             this.captured = false;
+            this.uploadProgress = 0;
             this.start();
         },
 
@@ -89,12 +90,48 @@ export default function cameraCapture() {
         },
 
         _errorMessage(e) {
-            if (!e) return 'Camera not available.';
-            if (e.name === 'NotAllowedError')      return 'Camera permission denied.';
-            if (e.name === 'NotFoundError')        return 'No camera was found on this device.';
-            if (e.name === 'NotReadableError')     return 'Camera is in use by another application.';
-            if (e.message === 'UNSUPPORTED')       return 'Your browser does not support camera capture.';
+            if (!e)                               return 'Camera not available.';
+            if (e.name === 'NotAllowedError')     return 'Camera permission denied. Please allow access and try again.';
+            if (e.name === 'NotFoundError')       return 'No camera found on this device.';
+            if (e.name === 'NotReadableError')    return 'Camera is in use by another application.';
+            if (e.name === 'OverconstrainedError') return 'Camera does not meet the required constraints.';
             return 'Could not access the camera. Please try again.';
+        },
+
+        _upload(file) {
+            if (!$wire?.upload) {
+                this.captured = false;
+                this.error = 'Image captured, but upload is not available. Please use the upload option below.';
+                return;
+            }
+
+            this.error = '';
+            this.uploading = true;
+            this.uploadProgress = 0;
+
+            $wire.upload(
+                'selfie',
+                file,
+                () => {
+                    this.uploading = false;
+                    this.uploadProgress = 100;
+                },
+                () => {
+                    this.uploading = false;
+                    this.captured = false;
+                    this.uploadProgress = 0;
+                    this.error = 'Upload failed. Please try again or use the upload option below.';
+                },
+                (event) => {
+                    this.uploadProgress = event.detail?.progress ?? this.uploadProgress;
+                },
+                () => {
+                    this.uploading = false;
+                    this.captured = false;
+                    this.uploadProgress = 0;
+                    this.error = 'Upload cancelled.';
+                },
+            );
         },
     };
 }

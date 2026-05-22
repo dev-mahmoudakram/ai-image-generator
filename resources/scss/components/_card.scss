@@ -1,21 +1,85 @@
+// ── Base card ─────────────────────────────────────────────────────────────────
 .card {
+    position: relative;
     background: var(--color-surface);
     border: 1px solid var(--color-border);
-    border-radius: var(--radius-lg);
-    padding: var(--space-5);
-    box-shadow: var(--shadow);
+    border-radius: var(--radius-xl);
+    padding: clamp(20px, 3vw, 32px);
+    box-shadow: 0 2px 12px rgba(26, 44, 34, 0.08), 0 1px 3px rgba(26, 44, 34, 0.05);
 }
-.card__title { margin-bottom: var(--space-3); }
+
+// ── Premium card with gold inner border ───────────────────────────────────────
+.premium-card {
+    border-color: rgba(196, 152, 42, 0.3);
+    box-shadow:
+        var(--shadow),
+        inset 0 1px 0 rgba(255, 255, 255, 0.7);
+
+    &::before {
+        content: '';
+        position: absolute;
+        inset: 8px;
+        border: 1px solid rgba(196, 152, 42, 0.14);
+        border-radius: calc(var(--radius-xl) - 6px);
+        pointer-events: none;
+    }
+}
+
+// ── Success / centered state card ─────────────────────────────────────────────
+.success-card {
+    text-align: center;
+    padding-block: var(--space-7);
+
+    h2 { margin-bottom: var(--space-3); }
+    p  { margin-bottom: var(--space-5); }
+    p:last-child { margin-bottom: 0; }
+}
+
+// ── Success mark (icon circle) ────────────────────────────────────────────────
+.success-mark {
+    display: grid;
+    place-items: center;
+    width: 68px;
+    height: 68px;
+    margin: 0 auto var(--space-5);
+    border-radius: 50%;
+    color: #fff;
+    font-size: 22px;
+    font-weight: 900;
+    background: linear-gradient(145deg, var(--color-primary-3), var(--color-primary-2));
+    box-shadow:
+        0 8px 24px rgba(0, 92, 58, 0.28),
+        inset 0 1px 0 rgba(255, 255, 255, 0.15);
+}
+
+// ── Card divider ──────────────────────────────────────────────────────────────
+.card__divider {
+    height: 1px;
+    background: linear-gradient(90deg, transparent, var(--color-border), transparent);
+    margin: var(--space-5) 0;
+    border: 0;
+}
+
+// ── Template card (in gallery) ────────────────────────────────────────────────
 .template-card {
     cursor: pointer;
     text-align: left;
     width: 100%;
-    transition: border-color var(--transition);
-    &:hover { border-color: var(--color-primary); }
-}
+    overflow: hidden;
+    padding: 0;
+    transition:
+        border-color var(--transition),
+        box-shadow var(--transition),
+        transform var(--transition);
 
-.card__divider {
-    height: 1px;
-    background: var(--color-border);
-    margin: var(--space-4) 0;
+    &:hover {
+        border-color: var(--color-gold);
+        box-shadow: var(--shadow-lg), 0 0 0 1px rgba(196, 152, 42, 0.2);
+        transform: translateY(-3px);
+    }
+
+    &:focus-visible {
+        outline: 2px solid var(--color-primary);
+        outline-offset: 2px;
+    }
 }

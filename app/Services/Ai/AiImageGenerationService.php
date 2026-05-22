@@ -34,13 +34,24 @@ class AiImageGenerationService
 
     public function buildPrompt(string $promptHint = ''): string
     {
-        $base = 'Generate a photorealistic portrait of the person from the selfie image, '
-            . 'styled to match the visual aesthetic and world of the reference template image. '
-            . 'Preserve the person\'s facial identity, skin tone, and unique features exactly. '
-            . 'Apply the template\'s visual style, lighting, environment, color palette, and mood.';
+        $base = <<<'PROMPT'
+Use Image A as the identity reference and Image B as the scene, pose, outfit, and composition reference.
+
+Replace the man in Image B with the person from Image A. Preserve the facial identity, skin tone, and recognizable features of the person in Image A, while matching the overall look, traditional Saudi clothing, pose, and atmosphere of Image B.
+
+The final image should show the person from Image A standing in the same style and setting as Image B, wearing authentic traditional Saudi attire, with a realistic and elegant appearance. Keep the Saudi-inspired heritage background and premium cultural atmosphere.
+
+Important:
+- Preserve the identity of the person in Image A
+- Use Image B only as style, clothing, pose, and composition reference
+- Do not copy watermarks
+- Do not recreate the image as an exact clone
+- Keep the final result photorealistic, clean, high-quality, and visually premium
+- Maintain natural facial proportions and realistic lighting
+PROMPT;
 
         if ($promptHint = trim($promptHint)) {
-            $base .= ' ' . $promptHint;
+            $base .= "\n\nTemplate style note:\n{$promptHint}";
         }
 
         return $base;

@@ -1,25 +1,85 @@
+// ── Step indicator ────────────────────────────────────────────────────────────
 .steps {
     display: flex;
-    gap: var(--space-2);
+    align-items: stretch;
+    gap: 0;
     margin-bottom: var(--space-5);
-    flex-wrap: wrap;
+    counter-reset: step;
 }
+
 .steps__item {
     flex: 1;
-    min-width: 110px;
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
     padding: 10px 14px;
-    background: var(--color-surface);
+    background: rgba(255, 253, 248, 0.7);
     border: 1px solid var(--color-border);
-    border-radius: var(--radius);
+    border-right: 0;
     font-size: 13px;
-    color: var(--color-text-dim);
+    font-weight: 600;
+    color: var(--color-text-muted);
+    transition: background var(--transition), color var(--transition);
+    position: relative;
+
+    &:first-child { border-radius: var(--radius) 0 0 var(--radius); }
+    &:last-child  { border-radius: 0 var(--radius) var(--radius) 0; border-right: 1px solid var(--color-border); }
 
     &--active {
-        border-color: var(--color-primary);
-        color: var(--color-text);
-        background: var(--color-surface-2);
+        background: linear-gradient(135deg, var(--color-primary), var(--color-primary-2));
+        border-color: var(--color-primary-2);
+        color: #fff;
+        z-index: 1;
+        box-shadow: var(--shadow-sm);
+
+        .steps__num {
+            background: rgba(255, 255, 255, 0.2);
+            border-color: rgba(255, 255, 255, 0.3);
+            color: #fff;
+        }
     }
+
     &--done {
-        opacity: 0.7;
+        background: rgba(0, 92, 58, 0.05);
+        border-color: rgba(0, 92, 58, 0.18);
+        color: var(--color-primary);
+
+        .steps__num {
+            background: var(--color-primary);
+            border-color: var(--color-primary);
+            color: #fff;
+        }
     }
+}
+
+// Step number circle
+.steps__num {
+    display: inline-grid;
+    place-items: center;
+    width: 22px;
+    height: 22px;
+    border-radius: 50%;
+    border: 1.5px solid var(--color-border-2);
+    color: var(--color-text-muted);
+    font-size: 11px;
+    font-weight: 800;
+    flex-shrink: 0;
+    transition: background var(--transition), border-color var(--transition), color var(--transition);
+}
+
+// ── Use first child span as num by default ────────────────────────────────────
+.steps__item > span:first-child {
+    @extend .steps__num;
+}
+
+.steps__item--active > span:first-child {
+    background: rgba(255, 255, 255, 0.2);
+    border-color: rgba(255, 255, 255, 0.35);
+    color: #fff;
+}
+
+.steps__item--done > span:first-child {
+    background: var(--color-primary);
+    border-color: var(--color-primary);
+    color: #fff;
 }

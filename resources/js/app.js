@@ -1,7 +1,10 @@
-import { Livewire, Alpine } from '../../vendor/livewire/livewire/dist/livewire.esm';
-
 import cameraCapture from './camera';
+import fileDrop from './file-drop';
+import bootSelfieUploader from './selfie-uploader';
 
-Alpine.data('cameraCapture', cameraCapture);
+document.addEventListener('alpine:init', () => {
+    window.Alpine?.data('cameraCapture', cameraCapture);
+    window.Alpine?.data('fileDrop', fileDrop);
+});
 
-Livewire.start();
+bootSelfieUploader();

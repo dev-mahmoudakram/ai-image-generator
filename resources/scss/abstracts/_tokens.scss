@@ -1,36 +1,71 @@
 :root {
-    --color-bg:        #0b0c0f;
-    --color-surface:   #14161b;
-    --color-surface-2: #1c1f26;
-    --color-border:    #262a33;
-    --color-text:      #e7e9ee;
-    --color-text-dim:  #9aa0ac;
-    --color-primary:   #7c5cff;
-    --color-primary-2: #5a3df0;
-    --color-success:   #1fbf75;
-    --color-warning:   #f5a623;
-    --color-danger:    #ef4444;
+    // ── Backgrounds ───────────────────────────────────────────────────────────
+    --color-bg:        #E6DECE;   // warm parchment page
+    --color-bg-soft:   #EDE5D4;   // slightly lighter parchment
+    --color-surface:   #F4ECDB;   // warm cream — cards & table rows
+    --color-surface-2: #DDD0B4;   // deep sand — table headers
 
-    --radius-sm: 6px;
-    --radius:    10px;
-    --radius-lg: 18px;
+    // ── Borders ───────────────────────────────────────────────────────────────
+    --color-border:    #C4B284;   // warm gold-tan, more visible
+    --color-border-2:  #96763C;   // deep gold for hover/focus
 
-    --space-1: 4px;
-    --space-2: 8px;
-    --space-3: 12px;
-    --space-4: 16px;
-    --space-5: 24px;
-    --space-6: 32px;
-    --space-7: 48px;
-    --space-8: 64px;
+    // ── Text ──────────────────────────────────────────────────────────────────
+    --color-text:      #1A2C22;
+    --color-text-dim:  #5A6B62;
+    --color-text-muted:#8A9990;
 
-    --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.25);
-    --shadow:    0 6px 24px rgba(0, 0, 0, 0.35);
-    --shadow-lg: 0 18px 48px rgba(0, 0, 0, 0.45);
+    // ── Saudi Green ───────────────────────────────────────────────────────────
+    --color-primary:   #005C3A;
+    --color-primary-2: #003D27;
+    --color-primary-3: #007A4E;
+    --color-primary-4: #CCE8DA;
 
-    --font-sans: 'Instrument Sans', ui-sans-serif, system-ui, sans-serif,
+    // ── Royal Gold ────────────────────────────────────────────────────────────
+    --color-gold:      #C4982A;
+    --color-gold-2:    #9A7620;
+    --color-gold-soft: #EACE88;
+    --color-gold-pale: #F6EDD4;
+
+    --color-sand:      #E3D7BC;
+
+    // ── State ─────────────────────────────────────────────────────────────────
+    --color-success:   #1A7A50;
+    --color-warning:   #B87820;
+    --color-danger:    #B04040;
+
+    // ── Radii ─────────────────────────────────────────────────────────────────
+    --radius-xs:  6px;
+    --radius-sm:  10px;
+    --radius:     16px;
+    --radius-lg:  22px;
+    --radius-xl:  32px;
+    --radius-2xl: 48px;
+
+    // ── Spacing ───────────────────────────────────────────────────────────────
+    --space-1:  4px;
+    --space-2:  8px;
+    --space-3:  12px;
+    --space-4:  16px;
+    --space-5:  24px;
+    --space-6:  32px;
+    --space-7:  48px;
+    --space-8:  64px;
+    --space-9:  96px;
+    --space-10: 128px;
+
+    // ── Shadows ───────────────────────────────────────────────────────────────
+    --shadow-xs: 0 1px 3px rgba(26, 44, 34, 0.06);
+    --shadow-sm: 0 2px 8px rgba(26, 44, 34, 0.09);
+    --shadow:    0 8px 32px rgba(26, 44, 34, 0.13);
+    --shadow-lg: 0 20px 64px rgba(26, 44, 34, 0.17);
+    --shadow-xl: 0 36px 100px rgba(26, 44, 34, 0.22);
+
+    // ── Typography ────────────────────────────────────────────────────────────
+    --font-sans: 'Cairo', ui-sans-serif, system-ui, sans-serif,
                  'Apple Color Emoji', 'Segoe UI Emoji';
 
-    --container: 1120px;
-    --transition: 180ms ease;
+    // ── Layout ────────────────────────────────────────────────────────────────
+    --container:  1200px;
+    --transition: 200ms cubic-bezier(0.25, 0.8, 0.25, 1);
+    --transition-fast: 100ms ease;
 }

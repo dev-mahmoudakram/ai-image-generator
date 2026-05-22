@@ -12,6 +12,7 @@ enum SubmissionStatus: string
     case Processing       = 'processing';
     case Completed        = 'completed';
     case Failed           = 'failed';
+    case Cancelled        = 'cancelled';
 
     public function label(): string
     {
@@ -24,6 +25,7 @@ enum SubmissionStatus: string
             self::Processing       => 'Processing',
             self::Completed        => 'Completed',
             self::Failed           => 'Failed',
+            self::Cancelled        => 'Cancelled',
         };
     }
 
@@ -38,17 +40,23 @@ enum SubmissionStatus: string
             self::Processing       => 'badge badge--queued',
             self::Completed        => 'badge badge--completed',
             self::Failed           => 'badge badge--failed',
+            self::Cancelled        => 'badge badge--cancelled',
         };
     }
 
     public function isTerminal(): bool
     {
-        return in_array($this, [self::Completed, self::Failed]);
+        return in_array($this, [self::Completed, self::Failed, self::Cancelled]);
     }
 
     public function canRetry(): bool
     {
-        return $this === self::Failed;
+        return in_array($this, [self::Failed, self::Cancelled]);
+    }
+
+    public function canCancelQueued(): bool
+    {
+        return $this === self::Queued;
     }
 
     public function isGenerating(): bool

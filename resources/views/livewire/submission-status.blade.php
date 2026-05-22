@@ -1,73 +1,83 @@
-<div style="max-width:560px;margin:0 auto;padding:var(--space-6) 0;">
-
-    {{-- Poll while not terminal --}}
+<div class="status-shell">
     @if(!$submission->status->isTerminal())
         <div wire:poll.2000ms style="display:none;"></div>
     @endif
 
-    {{-- Header --}}
-    <div style="display:flex;align-items:center;gap:var(--space-3);margin-bottom:var(--space-6);">
+    <div class="page-heading">
         <span class="badge badge--{{ str_replace('_', '-', $submission->status->value) }}">
             {{ $submission->status->label() }}
         </span>
-        <span style="font-size:13px;color:var(--color-text-dim);">
-            {{ $submission->created_at->diffForHumans() }}
-        </span>
+        <h1 style="margin-top:var(--space-4);">Your portrait journey</h1>
+        <p>Submitted {{ $submission->created_at->diffForHumans() }}.</p>
     </div>
 
-    {{-- ── Completed ──────────────────────────────────────────────────────────── --}}
     @if($submission->status->value === 'completed' && $submission->generatedImage)
-        <div class="card" style="padding:var(--space-4);margin-bottom:var(--space-4);">
-            <img
-                src="{{ $submission->generatedImage->url() }}"
-                alt="Your AI portrait"
-                style="width:100%;border-radius:var(--radius-lg);display:block;"
+        <div class="card premium-card result-shell">
+            <div class="success-card" style="padding-top:0;">
+                <div class="success-mark">OK</div>
+                <h2>Your portrait is ready</h2>
+                <p>Download and save your Saudi-inspired AI portrait.</p>
+            </div>
+
+            <div class="portrait-frame" style="margin-bottom:var(--space-5);">
+                <img
+                    src="{{ $submission->generatedImage->url() }}"
+                    alt="Your AI portrait"
+                >
+            </div>
+
+            <a
+                href="{{ $submission->generatedImage->url() }}"
+                download="portrait.jpg"
+                class="btn btn--primary btn--block"
+                style="margin-bottom:var(--space-3);"
             >
+                Download your portrait
+            </a>
+            <a href="{{ route('home') }}" class="btn btn--block">
+                Create another
+            </a>
         </div>
 
-        <a
-            href="{{ $submission->generatedImage->url() }}"
-            download="portrait.jpg"
-            class="btn btn--primary btn--block"
-            style="margin-bottom:var(--space-3);"
-        >
-            Download your portrait
-        </a>
-        <a href="{{ route('home') }}" class="btn btn--block" style="text-align:center;">
-            Create another
-        </a>
-
-    {{-- ── Processing / Queued ─────────────────────────────────────────────────── --}}
     @elseif($submission->status->isGenerating())
-        <div class="card" style="text-align:center;padding:var(--space-8);">
-            <div class="spinner" style="margin-bottom:var(--space-5);"></div>
-            <p style="font-weight:600;margin:0 0 var(--space-2);">Generating your portrait&hellip;</p>
-            <p style="font-size:14px;color:var(--color-text-dim);margin:0;">
-                This usually takes 20–60 seconds. You can safely leave this page and come back using the link below.
-            </p>
+        <div class="card premium-card success-card">
+            <div class="processing-orb" aria-hidden="true"></div>
+            <h2>Crafting your portrait</h2>
+            <p>This usually takes 20-60 seconds. You can keep this page open while the result is prepared.</p>
         </div>
 
-        <div style="margin-top:var(--space-4);padding:var(--space-4);background:var(--color-surface);border-radius:var(--radius);border:1px solid var(--color-border);">
-            <p style="font-size:13px;color:var(--color-text-dim);margin:0 0 var(--space-2);">Bookmark this link to check back later:</p>
-            <code style="font-size:12px;word-break:break-all;color:var(--color-text);">{{ request()->url() }}</code>
+        <div class="code-box" style="margin-top:var(--space-4);">
+            <p style="font-size:13px;margin-bottom:var(--space-2);">Bookmark this link to check back later:</p>
+            <code>{{ route('submission.track', $submission->tracking_token) }}</code>
         </div>
 
-    {{-- ── Failed ──────────────────────────────────────────────────────────────── --}}
     @elseif($submission->status->value === 'failed')
-        <div class="card" style="text-align:center;padding:var(--space-8);">
-            <p style="font-weight:600;color:var(--color-danger);margin:0 0 var(--space-2);">Generation failed</p>
-            <p style="font-size:14px;color:var(--color-text-dim);margin:0 0 var(--space-5);">
-                Something went wrong. Please try again or contact support.
-            </p>
+        <div class="card premium-card success-card">
+            <div class="success-mark" style="background:linear-gradient(160deg,var(--color-danger),#7f2927);">!</div>
+            <h2>Generation failed</h2>
+            <p>Something went wrong. Please try again or contact support.</p>
+            @if(app()->isLocal() && $submission->latestAttempt?->error_message)
+                <div class="code-box" style="margin:var(--space-4) 0;text-align:left;">
+                    <p style="font-size:13px;margin-bottom:var(--space-2);">Local debug detail:</p>
+                    <code>{{ Str::limit($submission->latestAttempt->error_message, 300) }}</code>
+                </div>
+            @endif
             <a href="{{ route('home') }}" class="btn btn--primary">Try again</a>
         </div>
 
-    {{-- ── Other (queued before isGenerating covers it, or draft, etc.) ───────── --}}
+    @elseif($submission->status->value === 'cancelled')
+        <div class="card premium-card success-card">
+            <div class="success-mark" style="background:linear-gradient(160deg,var(--color-danger),#7f2927);">!</div>
+            <h2>Generation cancelled</h2>
+            <p>This request was cancelled before the queued job was processed.</p>
+            <a href="{{ route('home') }}" class="btn btn--primary">Create another</a>
+        </div>
+
     @else
-        <div class="card" style="text-align:center;padding:var(--space-8);">
-            <p style="color:var(--color-text-dim);">Waiting to process your submission&hellip;</p>
+        <div class="card premium-card success-card">
+            <div class="processing-orb" aria-hidden="true"></div>
+            <h2>Waiting to process</h2>
+            <p>Your request is ready and will move forward shortly.</p>
         </div>
     @endif
-
 </div>
-

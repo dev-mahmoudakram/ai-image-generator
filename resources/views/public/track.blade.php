@@ -1,40 +1,40 @@
-<x-layouts.public title="Your submission">
-    <div style="max-width:560px;margin:0 auto;padding:var(--space-8) 0;">
-        <h1 style="font-size:1.5rem;font-weight:700;margin:0 0 var(--space-2);">Submission status</h1>
+@extends('layouts.public')
+@section('title', 'Your submission')
 
-        <div style="display:flex;align-items:center;gap:var(--space-3);margin-bottom:var(--space-6);">
-            <span class="status-badge status-badge--{{ $submission->status->value }}">
+@section('content')
+    <div class="status-shell">
+        <div class="page-heading">
+            <span class="badge badge--{{ str_replace('_', '-', $submission->status->value) }}">
                 {{ $submission->status->label() }}
             </span>
-            <span style="color:var(--color-text-muted);font-size:0.875rem;">
-                {{ $submission->created_at->diffForHumans() }}
-            </span>
+            <h1 style="margin-top:var(--space-4);">Submission status</h1>
         </div>
 
         @if($submission->status->value === 'completed' && $submission->generatedImage)
-            <div class="card" style="margin-bottom:var(--space-4);">
-                <img src="{{ $submission->generatedImage->url() }}"
-                     alt="Your AI portrait"
-                     style="width:100%;border-radius:var(--radius-md);">
+            <div class="card premium-card">
+                <div class="portrait-frame" style="margin-bottom:var(--space-5);">
+                    <img src="{{ $submission->generatedImage->url() }}"
+                         alt="Your AI portrait">
+                </div>
                 <a href="{{ $submission->generatedImage->url() }}"
                    download
-                   class="btn btn--primary"
-                   style="margin-top:var(--space-4);display:block;text-align:center;">
+                   class="btn btn--primary btn--block">
                     Download image
                 </a>
             </div>
         @elseif($submission->status->isGenerating())
-            <div class="card" style="text-align:center;padding:var(--space-8);">
-                <p style="color:var(--color-text-muted);">Your image is being generated. This usually takes under a minute.</p>
+            <div class="card premium-card success-card">
+                <div class="processing-orb" aria-hidden="true"></div>
+                <p>Your image is being generated. This usually takes under a minute.</p>
             </div>
         @elseif($submission->status->value === 'failed')
-            <div class="card" style="text-align:center;padding:var(--space-8);">
-                <p style="color:var(--color-error,#991b1b);">Generation failed. Please try again or contact support.</p>
+            <div class="card premium-card success-card">
+                <p style="color:var(--color-danger);font-weight:800;">Generation failed. Please try again or contact support.</p>
             </div>
         @else
-            <div class="card" style="text-align:center;padding:var(--space-8);">
-                <p style="color:var(--color-text-muted);">Waiting to process...</p>
+            <div class="card premium-card success-card">
+                <p>Waiting to process...</p>
             </div>
         @endif
     </div>
-</x-layouts.public>
+@endsection

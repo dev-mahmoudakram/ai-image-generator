@@ -1,226 +1,259 @@
-<div style="max-width:560px;margin:0 auto;">
-
-    {{-- Step indicator --}}
-    <div class="steps" style="margin-bottom:var(--space-6);">
-        <div class="steps__item {{ $step === 'form' ? 'steps__item--active' : 'steps__item--done' }}">
-            1. Your info
-        </div>
-        <div class="steps__item {{ $step === 'selfie' ? 'steps__item--active' : ($step === 'template' ? 'steps__item--done' : '') }}">
-            2. Selfie
-        </div>
-        <div class="steps__item {{ $step === 'template' ? 'steps__item--active' : '' }}">
-            3. Choose style
-        </div>
-    </div>
-
-    {{-- ── Step 1: Contact form ─────────────────────────────────────────────── --}}
+<div class="experience-shell">
     @if($step === 'form')
-        <div class="card">
-            <h1 style="font-size:1.5rem;font-weight:700;margin:0 0 var(--space-1);">Create your portrait</h1>
-            <p style="color:var(--color-text-dim);font-size:14px;margin:0 0 var(--space-5);">
-                Fill in your details to get started.
-            </p>
-
-            <form wire:submit="submitForm" novalidate>
-                <div class="field">
-                    <label class="field__label" for="name">Full name</label>
-                    <input
-                        class="field__input"
-                        type="text"
-                        id="name"
-                        wire:model.blur="name"
-                        autocomplete="name"
-                        placeholder="Your name"
-                    >
-                    @error('name') <p class="field__error">{{ $message }}</p> @enderror
-                </div>
-
-                <div class="field">
-                    <label class="field__label" for="phone">Phone number</label>
-                    <input
-                        class="field__input"
-                        type="tel"
-                        id="phone"
-                        wire:model.blur="phone"
-                        autocomplete="tel"
-                        placeholder="+966 5X XXX XXXX"
-                        dir="ltr"
-                    >
-                    @error('phone') <p class="field__error">{{ $message }}</p> @enderror
-                </div>
-
-                <div class="field">
-                    <label class="field__label" for="email">Email <span style="color:var(--color-text-dim);font-weight:400;">(optional)</span></label>
-                    <input
-                        class="field__input"
-                        type="email"
-                        id="email"
-                        wire:model.blur="email"
-                        autocomplete="email"
-                        placeholder="you@example.com"
-                    >
-                    @error('email') <p class="field__error">{{ $message }}</p> @enderror
-                </div>
-
-                <label class="checkbox" style="margin-bottom:var(--space-5);">
-                    <input type="checkbox" wire:model="consent">
-                    <span>I consent to my selfie being processed by AI to generate a portrait image. I can request deletion at any time.</span>
-                </label>
-                @error('consent') <p class="field__error" style="margin-top:calc(-1 * var(--space-3));margin-bottom:var(--space-4);">{{ $message }}</p> @enderror
-
-                <button type="submit" class="btn btn--primary btn--block" wire:loading.attr="disabled">
-                    <span wire:loading.remove wire:target="submitForm">Continue &rarr;</span>
-                    <span wire:loading wire:target="submitForm">Please wait...</span>
-                </button>
-            </form>
-        </div>
-
-    {{-- ── Step 2: Selfie capture ────────────────────────────────────────────── --}}
-    @elseif($step === 'selfie')
-        <div class="card">
-            <h2 style="font-size:1.25rem;font-weight:700;margin:0 0 var(--space-1);">Take a selfie</h2>
-            <p style="color:var(--color-text-dim);font-size:14px;margin:0 0 var(--space-5);">
-                Face the camera straight-on in good lighting for best results.
-            </p>
-
-            {{-- Camera --}}
-            <div x-data="cameraCapture">
-                <div class="camera">
-                    <video
-                        x-ref="video"
-                        class="camera__preview"
-                        x-show="streaming"
-                        autoplay
-                        muted
-                        playsinline
-                        style="display:none;"
-                    ></video>
-
-                    <canvas
-                        x-ref="canvas"
-                        class="camera__preview"
-                        x-show="captured"
-                        style="display:none;"
-                    ></canvas>
-
-                    {{-- Idle placeholder --}}
-                    <div
-                        class="camera__preview"
-                        x-show="!streaming && !captured"
-                        style="display:flex;align-items:center;justify-content:center;color:var(--color-text-dim);flex-direction:column;gap:var(--space-3);"
-                    >
-                        <svg width="48" height="48" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" d="M6.827 6.175A2.31 2.31 0 0 1 5.186 7.23c-.38.054-.757.112-1.134.175C2.999 7.58 2.25 8.507 2.25 9.574V18a2.25 2.25 0 0 0 2.25 2.25h15A2.25 2.25 0 0 0 21.75 18V9.574c0-1.067-.75-1.994-1.802-2.169a47.865 47.865 0 0 0-1.134-.175 2.31 2.31 0 0 1-1.64-1.055l-.822-1.316a2.192 2.192 0 0 0-1.736-1.039 48.774 48.774 0 0 0-5.232 0 2.192 2.192 0 0 0-1.736 1.039l-.821 1.316Z" />
-                            <path stroke-linecap="round" stroke-linejoin="round" d="M16.5 12.75a4.5 4.5 0 1 1-9 0 4.5 4.5 0 0 1 9 0ZM18.75 10.5h.008v.008h-.008V10.5Z" />
-                        </svg>
-                        <span style="font-size:14px;">Camera preview will appear here</span>
-                    </div>
-
-                    <div class="camera__actions">
-                        <button
-                            type="button"
-                            class="btn btn--primary"
-                            x-show="!streaming && !captured"
-                            @click="start()"
-                            style="display:none;"
-                        >Open camera</button>
-
-                        <button
-                            type="button"
-                            class="btn btn--primary"
-                            x-show="streaming"
-                            @click="capture()"
-                            style="display:none;"
-                        >Take photo</button>
-
-                        <button
-                            type="button"
-                            class="btn"
-                            x-show="streaming"
-                            @click="stop()"
-                            style="display:none;"
-                        >Cancel</button>
-
-                        <button
-                            type="button"
-                            class="btn"
-                            x-show="captured"
-                            @click="retake()"
-                            style="display:none;"
-                        >Retake</button>
-                    </div>
-
-                    <p class="camera__error" x-show="error" x-text="error" style="display:none;"></p>
-                </div>
-
-                <div wire:loading wire:target="selfie" style="text-align:center;padding:var(--space-4);color:var(--color-text-dim);font-size:14px;">
-                    Uploading selfie&hellip;
-                </div>
-            </div>
-
-            {{-- File upload fallback --}}
-            <div style="margin-top:var(--space-5);">
-                <p style="text-align:center;font-size:13px;color:var(--color-text-dim);margin-bottom:var(--space-3);">
-                    &mdash; or upload from your device &mdash;
+        <div class="hero-grid">
+            <section class="hero-panel" aria-labelledby="hero-title">
+                <span class="eyebrow" style="color:var(--color-gold-soft);">Saudi AI Portrait</span>
+                <h1 id="hero-title" style="margin-top:var(--space-4);">
+                    Create a portrait for a Saudi moment.
+                </h1>
+                <p style="max-width:560px;font-size:1.03rem;margin-top:var(--space-4);">
+                    Upload a selfie, choose a Saudi-inspired visual style, and receive a polished AI portrait designed for events, campaigns, and memorable occasions.
                 </p>
-                <div class="field" style="margin:0;">
-                    <label class="field__label" for="selfie-file">Choose a photo</label>
-                    <input
-                        class="field__input"
-                        type="file"
-                        id="selfie-file"
-                        wire:model="selfie"
-                        accept="image/jpeg,image/png,image/webp"
-                    >
-                    @error('selfie') <p class="field__error">{{ $message }}</p> @enderror
+                <div class="hero-panel__meta" aria-label="Experience highlights">
+                    <span class="hero-chip">Heritage inspired</span>
+                    <span class="hero-chip">Mobile ready</span>
+                    <span class="hero-chip">Private upload flow</span>
                 </div>
-            </div>
-        </div>
+            </section>
 
-    {{-- ── Step 3: Template selection ─────────────────────────────────────────── --}}
-    @elseif($step === 'template')
-        <div style="margin-bottom:var(--space-5);">
-            <h2 style="font-size:1.25rem;font-weight:700;margin:0 0 var(--space-1);">Choose your style</h2>
-            <p style="color:var(--color-text-dim);font-size:14px;margin:0;">
-                Pick the look you want for your AI portrait.
-            </p>
-        </div>
+            <section class="wizard-panel" aria-labelledby="form-title">
+                @include('livewire.partials.submission-steps', ['step' => $step])
 
-        <div wire:loading wire:target="chooseTemplate" style="text-align:center;padding:var(--space-8);color:var(--color-text-dim);">
-            <p>Queuing your generation&hellip;</p>
-        </div>
+                <div class="card premium-card">
+                    <span class="eyebrow">Step 01</span>
+                    <h2 id="form-title">Your information</h2>
+                    <p>We use these details to prepare and track your portrait request.</p>
 
-        <div wire:loading.remove wire:target="chooseTemplate">
-            @if($templates->isEmpty())
-                <div class="card" style="text-align:center;padding:var(--space-8);">
-                    <p style="color:var(--color-text-dim);">No styles available right now. Please try again later.</p>
+                    <form wire:submit="submitForm" novalidate>
+                        <div class="field">
+                            <label class="field__label" for="name">Full name</label>
+                            <input
+                                class="field__input"
+                                type="text"
+                                id="name"
+                                wire:model.blur="name"
+                                autocomplete="name"
+                                placeholder="Your name"
+                            >
+                            @error('name') <p class="field__error">{{ $message }}</p> @enderror
+                        </div>
+
+                        <div class="field">
+                            <label class="field__label" for="phone">Phone number</label>
+                            <input
+                                class="field__input"
+                                type="tel"
+                                id="phone"
+                                wire:model.blur="phone"
+                                autocomplete="tel"
+                                placeholder="+966 5X XXX XXXX"
+                                dir="ltr"
+                            >
+                            @error('phone') <p class="field__error">{{ $message }}</p> @enderror
+                        </div>
+
+                        <div class="field">
+                            <label class="field__label" for="email">Email <span style="font-weight:600;">(optional)</span></label>
+                            <input
+                                class="field__input"
+                                type="email"
+                                id="email"
+                                wire:model.blur="email"
+                                autocomplete="email"
+                                placeholder="you@example.com"
+                            >
+                            @error('email') <p class="field__error">{{ $message }}</p> @enderror
+                        </div>
+
+                        <label class="checkbox" style="margin-bottom:var(--space-5);">
+                            <input type="checkbox" wire:model="consent">
+                            <span>I consent to my selfie being processed by AI to generate a portrait image. I can request deletion at any time.</span>
+                        </label>
+                        @error('consent') <p class="field__error" style="margin-top:calc(-1 * var(--space-3));margin-bottom:var(--space-4);">{{ $message }}</p> @enderror
+
+                        <button type="submit" class="btn btn--primary btn--block" wire:loading.attr="disabled">
+                            <span wire:loading.remove wire:target="submitForm">Continue</span>
+                            <span wire:loading wire:target="submitForm">Please wait...</span>
+                        </button>
+                    </form>
                 </div>
-            @else
-                <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:var(--space-4);">
-                    @foreach($templates as $template)
+            </section>
+        </div>
+
+    @elseif($step === 'selfie')
+        <section class="wizard-panel" aria-labelledby="selfie-title">
+            @include('livewire.partials.submission-steps', ['step' => $step])
+
+            <div class="card premium-card">
+                <span class="eyebrow">Step 02</span>
+                <h2 id="selfie-title">Capture your selfie</h2>
+                <p>Face the camera straight-on in good lighting for the best generated result.</p>
+
+                @if($selfieAttached)
+                    <div class="success-card">
+                        <div class="success-mark">OK</div>
+                        <h3>Photo uploaded successfully</h3>
+                        <p>Ready to choose your style.</p>
                         <button
                             type="button"
-                            class="card template-card"
-                            wire:click="chooseTemplate({{ $template->id }})"
+                            class="btn btn--primary btn--block"
+                            wire:click="nextStep"
                             wire:loading.attr="disabled"
-                            style="padding:var(--space-3);"
                         >
-                            <img
-                                src="{{ $template->thumbnailUrl() ?? $template->imageUrl() }}"
-                                alt="{{ $template->title }}"
-                                style="width:100%;aspect-ratio:1;object-fit:cover;border-radius:var(--radius);margin-bottom:var(--space-3);"
-                            >
-                            <div style="font-weight:500;font-size:14px;">{{ $template->title }}</div>
-                            @if($template->description)
-                                <div style="font-size:12px;color:var(--color-text-dim);margin-top:var(--space-1);">
-                                    {{ Str::limit($template->description, 80) }}
-                                </div>
-                            @endif
+                            <span wire:loading.remove wire:target="nextStep">Choose style</span>
+                            <span wire:loading wire:target="nextStep">Please wait&hellip;</span>
                         </button>
-                    @endforeach
-                </div>
-            @endif
-        </div>
-    @endif
+                    </div>
+                @else
+                    <div
+                        class="selfie-uploader"
+                        data-selfie-uploader
+                        data-upload-url="{{ $submissionToken ? route('submission.selfie.store', $submissionToken) : '' }}"
+                        data-csrf-token="{{ csrf_token() }}"
+                    >
+                        <div data-selfie-inputs>
+                            <div class="camera">
+                                <video
+                                    data-camera-video
+                                    class="camera__preview"
+                                    autoplay
+                                    muted
+                                    playsinline
+                                    hidden
+                                ></video>
 
+                                <canvas
+                                    data-camera-canvas
+                                    class="camera__preview"
+                                    hidden
+                                ></canvas>
+
+                                <div
+                                    data-camera-placeholder
+                                    class="camera__preview camera-placeholder"
+                                >
+                                    <span class="camera-placeholder__icon" aria-hidden="true">AI</span>
+                                    <span>Camera preview will appear here</span>
+                                </div>
+
+                                <div class="camera__actions">
+                                    <button type="button" class="btn btn--primary" data-camera-open>Open camera</button>
+                                    <button type="button" class="btn btn--primary" data-camera-capture hidden>Take photo</button>
+                                    <button type="button" class="btn" data-camera-cancel hidden>Cancel</button>
+                                    <button type="button" class="btn" data-camera-retake hidden>Retake</button>
+                                </div>
+
+                                <p data-selfie-status class="camera-note" hidden></p>
+                            </div>
+
+                            <div class="upload-divider">
+                                <span>or upload from your device</span>
+                            </div>
+
+                            <div
+                                class="drop-zone"
+                                data-selfie-drop-zone
+                                role="button"
+                                tabindex="0"
+                            >
+                                <img
+                                    data-selfie-preview
+                                    alt="Selected selfie preview"
+                                    class="drop-zone__img"
+                                    hidden
+                                >
+
+                                <div class="drop-zone__body">
+                                    <svg class="drop-zone__icon" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24" aria-hidden="true">
+                                        <path stroke-linecap="round" stroke-linejoin="round"
+                                              d="M3 16.5v2.25A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75V16.5m-13.5-9L12 3m0 0 4.5 4.5M12 3v13.5" />
+                                    </svg>
+                                    <p class="drop-zone__title">
+                                        Drop your file here<br>
+                                        <span>or click to browse</span>
+                                    </p>
+                                    <p class="drop-zone__hint">JPG, PNG, or WebP. Max 8 MB.</p>
+                                </div>
+
+                                <div class="drop-zone__badge" data-selfie-file-name hidden></div>
+
+                                <input
+                                    data-selfie-file
+                                    type="file"
+                                    accept="image/jpeg,image/png,image/webp"
+                                    style="position:absolute;opacity:0;width:1px;height:1px;pointer-events:none;"
+                                >
+                            </div>
+                        </div>
+
+                        <div data-selfie-success class="success-card" hidden>
+                            <div class="success-mark">OK</div>
+                            <h3>Photo uploaded successfully</h3>
+                            <p>Ready to choose your style.</p>
+                            <button
+                                type="button"
+                                class="btn btn--primary btn--block"
+                                wire:click="nextStep"
+                                wire:loading.attr="disabled"
+                            >
+                                <span wire:loading.remove wire:target="nextStep">Choose style</span>
+                                <span wire:loading wire:target="nextStep">Please wait&hellip;</span>
+                            </button>
+                        </div>
+                    </div>
+                @endif
+            </div>
+        </section>
+
+    @elseif($step === 'template')
+        <section class="wizard-panel wizard-panel--wide" aria-labelledby="template-title">
+            @include('livewire.partials.submission-steps', ['step' => $step])
+
+            <div class="page-heading">
+                <span class="eyebrow">Step 03</span>
+                <h2 id="template-title">Choose your Saudi style</h2>
+                <p>Select the visual world you want for your AI portrait.</p>
+            </div>
+
+            <div wire:loading wire:target="chooseTemplate" class="card success-card">
+                <div class="spinner" style="margin-bottom:var(--space-4);"></div>
+                <h3>Preparing your generation</h3>
+                <p>Please wait while your selected style is queued.</p>
+            </div>
+
+            <div wire:loading.remove wire:target="chooseTemplate">
+                @if($templates->isEmpty())
+                    <div class="card success-card">
+                        <p>No styles available right now. Please try again later.</p>
+                    </div>
+                @else
+                    <div class="template-gallery">
+                        @foreach($templates as $template)
+                            <button
+                                type="button"
+                                class="card template-card"
+                                wire:key="template-{{ $template->id }}"
+                                wire:click="chooseTemplate({{ $template->id }})"
+                                wire:loading.attr="disabled"
+                            >
+                                <span class="template-card__image">
+                                    <img
+                                        src="{{ $template->thumbnailUrl() ?? $template->imageUrl() }}"
+                                        alt="{{ $template->title }}"
+                                    >
+                                </span>
+                                <span class="template-card__body">
+                                    <span class="template-card__title">{{ $template->title }}</span>
+                                    @if($template->description)
+                                        <span class="template-card__desc">{{ Str::limit($template->description, 90) }}</span>
+                                    @endif
+                                    <span class="template-card__action">Generate</span>
+                                </span>
+                            </button>
+                        @endforeach
+                    </div>
+                @endif
+            </div>
+        </section>
+    @endif
 </div>

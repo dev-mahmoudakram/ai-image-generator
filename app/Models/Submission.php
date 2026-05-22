@@ -52,7 +52,7 @@ class Submission extends Model
 
     public function events(): HasMany
     {
-        return $this->hasMany(SubmissionEvent::class);
+        return $this->hasMany(SubmissionEvent::class)->orderBy('id');
     }
 
     // ── Convenience accessors ─────────────────────────────────────────────────

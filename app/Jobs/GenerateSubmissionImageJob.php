@@ -10,15 +10,16 @@ use App\Services\ImageStorageService;
 use App\Services\SubmissionService;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Queue\Queueable;
+use Illuminate\Support\Facades\Artisan;
+use Laravel\Ai\Exceptions\RateLimitedException;
 use Throwable;
 
 class GenerateSubmissionImageJob implements ShouldQueue
 {
     use Queueable;
 
-    public int $tries   = 3;
+    public int $tries   = 1;
     public int $timeout = 180;
-    public array $backoff = [10, 30, 60];
 
     public function __construct(public readonly int $submissionId) {}
 
@@ -29,7 +30,7 @@ class GenerateSubmissionImageJob implements ShouldQueue
     ): void {
         $submission = Submission::with(['selfie', 'template'])->findOrFail($this->submissionId);
 
-        if (! in_array($submission->status, [SubmissionStatus::Queued, SubmissionStatus::Failed])) {
+        if ($submission->status !== SubmissionStatus::Queued) {
             return;
         }
 
@@ -37,7 +38,12 @@ class GenerateSubmissionImageJob implements ShouldQueue
         $template = $submission->template;
 
         if (! $selfie || ! $template) {
-            throw new \RuntimeException("Selfie or template missing for submission #{$this->submissionId}");
+            $submissionService->markFailed(
+                $submission,
+                "Selfie or template missing for submission #{$this->submissionId}",
+            );
+
+            return;
         }
 
         $prompt = $ai->buildPrompt($template->prompt_hint ?? '');
@@ -74,6 +80,19 @@ class GenerateSubmissionImageJob implements ShouldQueue
 
             $submissionService->markCompleted($submission, $generatedAsset);
 
+        } catch (RateLimitedException $e) {
+            $attempt->update([
+                'status'        => 'failed',
+                'error_message' => 'Quota exceeded — queue worker stopped.',
+                'completed_at'  => now(),
+            ]);
+
+            $submissionService->markFailed($submission, 'AI provider quota exceeded. Please try again later.');
+
+            // Stop all queue workers so no further jobs burn quota that is already exhausted.
+            Artisan::call('queue:restart');
+
+            report($e);
         } catch (Throwable $e) {
             $attempt->update([
                 'status'        => 'failed',
@@ -83,7 +102,7 @@ class GenerateSubmissionImageJob implements ShouldQueue
 
             $submissionService->markFailed($submission, $e->getMessage());
 
-            throw $e;
+            report($e);
         }
     }
 

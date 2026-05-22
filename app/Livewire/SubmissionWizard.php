@@ -27,6 +27,7 @@ class SubmissionWizard extends Component
 
     public ?int    $submissionId    = null;
     public ?string $submissionToken = null;
+    public bool    $selfieAttached  = false;
 
     public function submitForm(): void
     {
@@ -57,8 +58,20 @@ class SubmissionWizard extends Component
         $submission = Submission::findOrFail($this->submissionId);
         app(SubmissionService::class)->attachSelfie($submission, $this->selfie);
 
-        $this->selfie = null;
+        $this->selfie         = null;
+        $this->selfieAttached = true;
         $this->resetErrorBag();
+    }
+
+    public function nextStep(): void
+    {
+        $submission = $this->submissionId
+            ? Submission::with('selfie')->find($this->submissionId)
+            : null;
+
+        abort_unless($submission && ($this->selfieAttached || $submission->selfie), 422);
+
+        $this->selfieAttached = true;
         $this->step = 'template';
     }
 

@@ -1,19 +1,66 @@
 .camera {
     display: flex;
     flex-direction: column;
-    gap: var(--space-3);
+    gap: var(--space-4);
 }
+
 .camera__preview {
     width: 100%;
     aspect-ratio: 1;
     object-fit: cover;
-    background: #000;
-    border-radius: var(--radius-lg);
-    border: 1px solid var(--color-border);
+    background: linear-gradient(145deg, #0B2A1F, #0F3528);
+    border-radius: var(--radius-xl);
+    border: 1px solid rgba(196, 152, 42, 0.35);
+    box-shadow: var(--shadow-lg), inset 0 1px 0 rgba(255, 255, 255, 0.04);
 }
+
 .camera__actions {
     display: flex;
     gap: var(--space-3);
     flex-wrap: wrap;
+    justify-content: center;
 }
-.camera__error { color: var(--color-danger); font-size: 14px; }
+
+.camera__error {
+    color: var(--color-danger);
+    font-size: 14px;
+    font-weight: 600;
+    text-align: center;
+    padding: var(--space-3) var(--space-4);
+    background: rgba(176, 64, 64, 0.06);
+    border: 1px solid rgba(176, 64, 64, 0.18);
+    border-radius: var(--radius);
+}
+
+// ── Placeholder before camera starts ─────────────────────────────────────────
+.camera-placeholder {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: var(--space-3);
+    color: rgba(255, 255, 255, 0.45);
+    font-size: 14px;
+    font-weight: 500;
+}
+
+.camera-placeholder__icon {
+    display: grid;
+    place-items: center;
+    width: 56px;
+    height: 56px;
+    border-radius: 50%;
+    background: rgba(196, 152, 42, 0.15);
+    border: 1px solid rgba(196, 152, 42, 0.25);
+    color: var(--color-gold-soft);
+    font-size: 13px;
+    font-weight: 900;
+    letter-spacing: 0;
+}
+
+.camera-note {
+    text-align: center;
+    color: var(--color-text-muted);
+    font-size: 13px;
+    margin: 0;
+}

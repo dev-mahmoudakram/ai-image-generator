@@ -1,19 +1,222 @@
+// ── Card table header ─────────────────────────────────────────────────────────
+.table-card-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 20px 24px;
+    border-bottom: 1px solid var(--color-border);
+    gap: var(--space-4);
+}
+
+.table-card-header__title {
+    margin: 0;
+    font-size: 15px;
+    font-weight: 800;
+    color: var(--color-text);
+    line-height: 1.2;
+}
+
+.table-card-header__sub {
+    margin: 4px 0 0;
+    font-size: 12px;
+    color: var(--color-text-muted);
+}
+
+// ── Scrollable wrapper ────────────────────────────────────────────────────────
+.table-wrap {
+    width: 100%;
+    overflow-x: auto;
+
+    &::-webkit-scrollbar         { height: 4px; }
+    &::-webkit-scrollbar-track   { background: transparent; }
+    &::-webkit-scrollbar-thumb   { background: var(--color-border); border-radius: 99px; }
+}
+
+// ── Base table ────────────────────────────────────────────────────────────────
 .table {
     width: 100%;
     border-collapse: collapse;
-    background: var(--color-surface);
-    border-radius: var(--radius);
-    overflow: hidden;
+    font-size: 14px;
+    color: var(--color-text);
 }
-.table th, .table td {
+
+// ── Header ────────────────────────────────────────────────────────────────────
+.table thead {
+    background: var(--color-surface-2);
+    border-bottom: 2px solid var(--color-border);
+}
+
+.table th {
+    padding: 13px 18px;
     text-align: left;
-    padding: 12px 14px;
+    font-size: 11px;
+    font-weight: 800;
+    color: var(--color-text-dim);
+    text-transform: uppercase;
+    letter-spacing: 0.09em;
+    white-space: nowrap;
+}
+
+// ── Body ──────────────────────────────────────────────────────────────────────
+.table td {
+    padding: 14px 18px;
     border-bottom: 1px solid var(--color-border);
+    vertical-align: middle;
+    line-height: 1.4;
+}
+
+.table tbody tr {
+    background: var(--color-surface);
+    transition: background 100ms ease;
+
+    &:hover   { background: var(--color-bg-soft); }
+    &:last-child td { border-bottom: none; }
+}
+
+// ── Cell helpers ──────────────────────────────────────────────────────────────
+.table .td-muted  { color: var(--color-text-muted); font-size: 13px; }
+.table .td-dim    { color: var(--color-text-dim); }
+.table .td-actions { text-align: right; white-space: nowrap; }
+
+.td-mono {
+    font-family: 'Fira Code', 'Cascadia Code', ui-monospace, monospace;
+    font-size: 12.5px;
+    letter-spacing: 0.02em;
+    direction: ltr;
+    unicode-bidi: embed;
+}
+
+// ── Person cell (avatar + name) ───────────────────────────────────────────────
+.td-person {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.td-person__avatar {
+    flex-shrink: 0;
+    display: grid;
+    place-items: center;
+    width: 34px;
+    height: 34px;
+    border-radius: 50%;
+    background: var(--color-primary-4);
+    color: var(--color-primary);
+    font-size: 12px;
+    font-weight: 800;
+    text-transform: uppercase;
+    border: 1.5px solid rgba(0, 92, 58, 0.2);
+    line-height: 1;
+}
+
+.td-person__name {
+    font-weight: 700;
+    color: var(--color-text);
+    font-size: 14px;
+    white-space: nowrap;
+}
+
+.td-person__sub {
+    font-size: 11.5px;
+    color: var(--color-text-muted);
+    margin-top: 1px;
+}
+
+// ── ID badge ──────────────────────────────────────────────────────────────────
+.td-id {
+    display: inline-block;
+    font-size: 11px;
+    font-weight: 700;
+    font-variant-numeric: tabular-nums;
+    color: var(--color-text-dim);
+    background: var(--color-bg);
+    border: 1px solid var(--color-border);
+    border-radius: 6px;
+    padding: 2px 7px;
+    line-height: 1.6;
+}
+
+// ── Empty state ───────────────────────────────────────────────────────────────
+.table-empty {
+    padding: 64px 24px;
+    text-align: center;
+    color: var(--color-text-muted);
     font-size: 14px;
 }
-.table th {
-    background: var(--color-surface-2);
-    color: var(--color-text-dim);
-    font-weight: 500;
+
+// ── Pagination ────────────────────────────────────────────────────────────────
+.pagination-nav {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--space-4);
+    flex-wrap: wrap;
+    padding: var(--space-5) 0;
 }
-.table tbody tr:hover { background: rgba(255, 255, 255, 0.02); }
+
+.pagination-info {
+    font-size: 13px;
+    color: var(--color-text-muted);
+
+    strong { color: var(--color-text-dim); font-weight: 700; }
+}
+
+.pagination-links {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
+
+.page-btn {
+    display: inline-grid;
+    place-items: center;
+    min-width: 36px;
+    height: 36px;
+    padding: 0 12px;
+    border-radius: var(--radius-sm);
+    border: 1px solid var(--color-border);
+    background: var(--color-surface);
+    color: var(--color-text-dim);
+    font-size: 13px;
+    font-weight: 600;
+    text-decoration: none;
+    transition: background var(--transition), border-color var(--transition), color var(--transition);
+    cursor: pointer;
+    white-space: nowrap;
+
+    &:hover { background: var(--color-bg-soft); border-color: var(--color-border-2); color: var(--color-text); }
+
+    &--active {
+        background: var(--color-primary);
+        border-color: var(--color-primary);
+        color: #fff;
+        font-weight: 700;
+        cursor: default;
+        box-shadow: 0 2px 8px rgba(0, 92, 58, 0.3);
+
+        &:hover { background: var(--color-primary); color: #fff; }
+    }
+
+    &--disabled {
+        opacity: 0.4;
+        cursor: not-allowed;
+        pointer-events: none;
+    }
+
+    &--gap {
+        border: none;
+        background: transparent;
+        box-shadow: none;
+        color: var(--color-text-muted);
+        min-width: 24px;
+        cursor: default;
+        padding: 0;
+
+        &:hover { background: transparent; color: var(--color-text-muted); }
+    }
+}
+
+@media (max-width: 640px) {
+    .pagination-nav  { justify-content: center; }
+    .pagination-info { width: 100%; text-align: center; }
+}

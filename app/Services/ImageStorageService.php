@@ -100,6 +100,10 @@ class ImageStorageService
 
     public function url(SubmissionAsset $asset): string
     {
+        if ($asset->disk === 'public') {
+            return '/storage/'.ltrim($asset->path, '/');
+        }
+
         return Storage::disk($asset->disk)->url($asset->path);
     }
 

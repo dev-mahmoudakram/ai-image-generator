@@ -43,17 +43,26 @@ class Template extends Model
 
     public function imageUrl(): ?string
     {
-        return $this->image_path
-            ? Storage::disk($this->disk)->url($this->image_path)
-            : null;
+        return $this->publicUrl($this->image_path);
     }
 
     public function thumbnailUrl(): ?string
     {
         $path = $this->thumbnail_path ?? $this->image_path;
 
-        return $path
-            ? Storage::disk($this->disk)->url($path)
-            : null;
+        return $this->publicUrl($path);
+    }
+
+    private function publicUrl(?string $path): ?string
+    {
+        if (! $path) {
+            return null;
+        }
+
+        if ($this->disk === 'public') {
+            return '/storage/'.ltrim($path, '/');
+        }
+
+        return Storage::disk($this->disk)->url($path);
     }
 }

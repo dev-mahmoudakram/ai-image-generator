@@ -22,7 +22,7 @@ return [
     |--------------------------------------------------------------------------
     */
 
-    'image_model'   => env('AI_IMAGE_MODEL', 'gemini-2.0-flash-preview-image-generation'),
+    'image_model'   => env('AI_IMAGE_MODEL', 'gemini-2.5-flash-image'),
     'image_timeout' => (int) env('AI_IMAGE_TIMEOUT', 120),
     'image_quality' => env('AI_IMAGE_QUALITY', 'high'),
 

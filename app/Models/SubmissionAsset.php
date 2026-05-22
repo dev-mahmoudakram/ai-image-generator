@@ -35,6 +35,10 @@ class SubmissionAsset extends Model
 
     public function url(): string
     {
+        if ($this->disk === 'public') {
+            return '/storage/'.ltrim($this->path, '/');
+        }
+
         return Storage::disk($this->disk)->url($this->path);
     }
 }

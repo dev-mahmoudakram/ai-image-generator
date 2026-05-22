@@ -15,8 +15,8 @@ class SubmissionController extends Controller
     public function index(): View
     {
         $submissions = Submission::with(['contact', 'template'])
-            ->latest()
-            ->paginate(25);
+            ->oldest()
+            ->paginate(10);
 
         return view('admin.submissions.index', compact('submissions'));
     }
@@ -33,5 +33,12 @@ class SubmissionController extends Controller
         $this->submissionService->retry($submission);
 
         return back()->with('success', 'Submission re-queued for generation.');
+    }
+
+    public function cancel(Submission $submission): RedirectResponse
+    {
+        $deletedJobs = $this->submissionService->cancelQueuedGeneration($submission);
+
+        return back()->with('success', "Submission cancelled. Removed {$deletedJobs} queued job(s).");
     }
 }

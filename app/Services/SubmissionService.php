@@ -10,6 +10,7 @@ use App\Models\SubmissionAsset;
 use App\Models\Template;
 use Illuminate\Http\Request;
 use Illuminate\Http\UploadedFile;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 
 class SubmissionService
@@ -24,7 +25,7 @@ class SubmissionService
     public function start(array $data, Request $request): Submission
     {
         $e164    = $this->phone->toE164($data['phone']);
-        $contact = Contact::firstOrCreate(
+        $contact = Contact::updateOrCreate(
             ['phone' => $e164],
             [
                 'name'  => $data['name'],
@@ -111,6 +112,43 @@ class SubmissionService
     }
 
     // ── Token lookup ──────────────────────────────────────────────────────────
+
+    public function cancelQueuedGeneration(Submission $submission): int
+    {
+        abort_unless($submission->status->canCancelQueued(), 422, 'Only queued submissions can be cancelled.');
+
+        return DB::transaction(function () use ($submission): int {
+            $jobIds = DB::table('jobs')
+                ->whereNull('reserved_at')
+                ->get(['id', 'payload'])
+                ->filter(fn (object $job): bool => $this->queuedJobBelongsToSubmission($job->payload, $submission->id))
+                ->pluck('id');
+
+            if ($jobIds->isNotEmpty()) {
+                DB::table('jobs')->whereIn('id', $jobIds)->delete();
+            }
+
+            $submission->update(['status' => SubmissionStatus::Cancelled]);
+            $submission->logEvent('cancelled', ['deleted_jobs' => $jobIds->count()]);
+
+            return $jobIds->count();
+        });
+    }
+
+    private function queuedJobBelongsToSubmission(string $payload, int $submissionId): bool
+    {
+        $decoded = json_decode($payload, true);
+        $command = $decoded['data']['command'] ?? null;
+
+        if (! is_string($command)) {
+            return false;
+        }
+
+        $job = @unserialize($command, ['allowed_classes' => [GenerateSubmissionImageJob::class]]);
+
+        return $job instanceof GenerateSubmissionImageJob
+            && $job->submissionId === $submissionId;
+    }
 
     public function findByToken(string $token): Submission
     {

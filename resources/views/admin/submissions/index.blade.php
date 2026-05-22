@@ -2,46 +2,80 @@
 @section('title', 'Submissions')
 
 @section('content')
-    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:var(--space-6);">
-        <h1 style="font-size:1.5rem;font-weight:700;margin:0;">Submissions</h1>
+    <div class="admin-page-header">
+        <div>
+            <span class="eyebrow">Operations</span>
+            <h1 class="admin-page-header__title">Submissions</h1>
+        </div>
+        <span style="font-size:13px;color:var(--color-text-muted);">{{ $submissions->total() }} total</span>
     </div>
 
-    @if($submissions->isEmpty())
-        <div class="card">
-            <p style="color:var(--color-text-dim);font-size:14px;">No submissions yet.</p>
-        </div>
-    @else
-        <div class="card" style="padding:0;overflow:hidden;">
-            <table class="table">
-                <thead>
-                    <tr>
-                        <th>#</th>
-                        <th>Name</th>
-                        <th>Phone</th>
-                        <th>Template</th>
-                        <th>Status</th>
-                        <th>Created</th>
-                        <th></th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @foreach($submissions as $submission)
+    <div class="card" style="padding:0;overflow:hidden;">
+        @if($submissions->isEmpty())
+            <div class="table-empty">
+                <div style="font-size:28px;margin-bottom:12px;opacity:0.2;">◆</div>
+                No submissions yet.
+            </div>
+        @else
+            <div class="table-wrap">
+                <table class="table">
+                    <thead>
                         <tr>
-                            <td style="color:var(--color-text-dim);font-size:12px;">{{ $submission->id }}</td>
-                            <td>{{ $submission->contact?->name ?? '—' }}</td>
-                            <td>{{ $submission->contact?->phone ?? '—' }}</td>
-                            <td>{{ $submission->template?->title ?? '—' }}</td>
-                            <td><span class="badge badge--{{ str_replace('_', '-', $submission->status->value) }}">{{ $submission->status->label() }}</span></td>
-                            <td style="font-size:13px;color:var(--color-text-dim);">{{ $submission->created_at->format('d M Y H:i') }}</td>
-                            <td><a href="{{ route('admin.submissions.show', $submission) }}" class="btn btn--ghost" style="font-size:13px;padding:6px 12px;">View</a></td>
+                            <th style="width:56px;">#</th>
+                            <th>Name</th>
+                            <th>Phone</th>
+                            <th>Template</th>
+                            <th>Status</th>
+                            <th>Date</th>
+                            <th style="width:148px;text-align:right;padding-right:24px;">Actions</th>
                         </tr>
-                    @endforeach
-                </tbody>
-            </table>
-        </div>
+                    </thead>
+                    <tbody>
+                        @foreach($submissions as $submission)
+                            <tr>
+                                <td>
+                                    <span class="td-id">{{ $submission->id }}</span>
+                                </td>
+                                <td>
+                                    <div class="td-person">
+                                        <div class="td-person__avatar">{{ mb_substr($submission->contact?->name ?? '?', 0, 1) }}</div>
+                                        <span class="td-person__name">{{ $submission->contact?->name ?? '—' }}</span>
+                                    </div>
+                                </td>
+                                <td>
+                                    <span class="td-mono td-muted">{{ $submission->contact?->phone ?? '—' }}</span>
+                                </td>
+                                <td class="td-dim" style="font-size:13px;">
+                                    {{ $submission->template?->title ?? '—' }}
+                                </td>
+                                <td>
+                                    <span class="badge badge--{{ str_replace('_', '-', $submission->status->value) }}">
+                                        {{ $submission->status->label() }}
+                                    </span>
+                                </td>
+                                <td class="td-muted" style="font-size:12px;white-space:nowrap;line-height:1.7;">
+                                    {{ $submission->created_at->format('d M Y') }}<br>
+                                    <span style="font-size:11px;opacity:0.7;">{{ $submission->created_at->format('H:i') }}</span>
+                                </td>
+                                <td class="td-actions" style="padding-right:24px;">
+                                    <div style="display:flex;align-items:center;gap:8px;justify-content:flex-end;">
+                                        @if($submission->status->canCancelQueued())
+                                            <form method="POST" action="{{ route('admin.submissions.cancel', $submission) }}"
+                                                  onsubmit="return confirm('Cancel this queued generation?');">
+                                                @csrf
+                                                <button type="submit" class="btn btn--danger btn--sm">Cancel</button>
+                                            </form>
+                                        @endif
+                                        <a href="{{ route('admin.submissions.show', $submission) }}" class="btn btn--ghost btn--sm">View</a>
+                                    </div>
+                                </td>
+                            </tr>
+                        @endforeach
+                    </tbody>
+                </table>
+            </div>
+        @endif
+    </div>
 
-        <div style="margin-top:var(--space-4);">
-            {{ $submissions->links() }}
-        </div>
-    @endif
+    {{ $submissions->links() }}
 @endsection

@@ -2,12 +2,15 @@
 @section('title', 'Edit — ' . $template->title)
 
 @section('content')
-    <div style="display:flex;align-items:center;gap:var(--space-4);margin-bottom:var(--space-6);">
+    <div class="admin-page-header" style="justify-content:flex-start;">
         <a href="{{ route('admin.templates.index') }}" class="btn btn--ghost">&larr; Back</a>
-        <h1 style="font-size:1.5rem;font-weight:700;margin:0;">Edit template</h1>
+        <div>
+            <span class="eyebrow">Creative library</span>
+            <h1 class="admin-page-header__title">Edit template</h1>
+        </div>
     </div>
 
-    <div class="card" style="max-width:600px;">
+    <div class="card premium-card" style="max-width:720px;">
         <form method="POST" action="{{ route('admin.templates.update', $template) }}" enctype="multipart/form-data">
             @csrf @method('PUT')
 
@@ -32,7 +35,7 @@
                 @error('prompt_hint') <p class="field__error">{{ $message }}</p> @enderror
             </div>
 
-            <div style="display:grid;grid-template-columns:1fr 1fr;gap:var(--space-4);">
+            <div class="form-grid form-grid--two">
                 <div class="field">
                     <label class="field__label" for="sort_order">Sort order</label>
                     <input class="field__input" type="number" id="sort_order" name="sort_order"
@@ -48,23 +51,15 @@
             </div>
 
             <div class="field">
-                <label class="field__label" for="image">Replace image</label>
-                @if($template->image_path !== 'templates/placeholder.jpg')
-                    <div style="margin-bottom:var(--space-2);">
-                        <img src="{{ $template->thumbnailUrl() ?? $template->imageUrl() }}"
-                             alt="{{ $template->title }}"
-                             style="height:80px;width:80px;object-fit:cover;border-radius:var(--radius);">
-                    </div>
-                @endif
-                <input class="field__input" type="file" id="image" name="image"
-                       accept="image/jpeg,image/png,image/webp">
-                <p style="font-size:12px;color:var(--color-text-dim);margin-top:var(--space-1);">
-                    Leave blank to keep current image. JPG, PNG, or WebP &mdash; max 8 MB.
-                </p>
-                @error('image') <p class="field__error">{{ $message }}</p> @enderror
+                <label class="field__label">Replace image</label>
+                <x-file-drop
+                    name="image"
+                    hint="Drop a new image to replace — JPG, PNG, or WebP, max 8 MB"
+                />
+                @error('image') <p class="field__error" style="margin-top:var(--space-2);">{{ $message }}</p> @enderror
             </div>
 
-            <div style="display:flex;gap:var(--space-3);">
+            <div style="display:flex;gap:var(--space-3);flex-wrap:wrap;">
                 <button type="submit" class="btn btn--primary">Save changes</button>
                 <a href="{{ route('admin.templates.index') }}" class="btn btn--ghost">Cancel</a>
             </div>

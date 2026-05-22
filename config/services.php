@@ -35,4 +35,8 @@ return [
         ],
     ],
 
+    'http' => [
+        'ca_bundle' => env('HTTP_CLIENT_CA_BUNDLE'),
+    ],
+
 ];
