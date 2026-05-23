@@ -128,7 +128,10 @@ class ImageStorageService
             return '/storage/'.ltrim($asset->path, '/');
         }
 
-        return Storage::disk($asset->disk)->url($asset->path);
+        /** @var \Illuminate\Filesystem\FilesystemAdapter $disk */
+        $disk = Storage::disk($asset->disk);
+
+        return $disk->url($asset->path);
     }
 
     // ── Helpers ───────────────────────────────────────────────────────────────

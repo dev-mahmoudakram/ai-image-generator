@@ -32,9 +32,11 @@ class TemplateController extends Controller
             'description' => ['nullable', 'string', 'max:1000'],
             'prompt_hint' => ['nullable', 'string', 'max:500'],
             'sort_order'  => ['nullable', 'integer', 'min:0'],
-            'is_active'   => ['boolean'],
+            'is_active'   => ['nullable', 'boolean'],
             'image'       => ['required', 'image', 'mimes:jpg,jpeg,png,webp', 'max:8192'],
         ]);
+
+        $data['is_active'] = $request->boolean('is_active');
 
         $this->templateService->create($data, $request->file('image'));
 
@@ -54,9 +56,11 @@ class TemplateController extends Controller
             'description' => ['nullable', 'string', 'max:1000'],
             'prompt_hint' => ['nullable', 'string', 'max:500'],
             'sort_order'  => ['nullable', 'integer', 'min:0'],
-            'is_active'   => ['boolean'],
+            'is_active'   => ['nullable', 'boolean'],
             'image'       => ['nullable', 'image', 'mimes:jpg,jpeg,png,webp', 'max:8192'],
         ]);
+
+        $data['is_active'] = $request->boolean('is_active');
 
         $this->templateService->update($template, $data, $request->file('image'));
 
