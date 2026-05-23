@@ -7,6 +7,18 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Support\Facades\Storage;
 
+/**
+ * @property int         $id
+ * @property string      $title
+ * @property string      $slug
+ * @property string|null $description
+ * @property string      $disk
+ * @property string|null $image_path
+ * @property string|null $thumbnail_path
+ * @property string|null $prompt_hint
+ * @property int         $sort_order
+ * @property bool        $is_active
+ */
 class Template extends Model
 {
     protected $fillable = [
@@ -63,6 +75,9 @@ class Template extends Model
             return '/storage/'.ltrim($path, '/');
         }
 
-        return Storage::disk($this->disk)->url($path);
+        /** @var \Illuminate\Filesystem\FilesystemAdapter $disk */
+        $disk = Storage::disk($this->disk);
+
+        return $disk->url($path);
     }
 }

@@ -8,6 +8,17 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 
+/**
+ * @property int              $id
+ * @property string           $uuid
+ * @property string           $tracking_token
+ * @property int|null         $contact_id
+ * @property int|null         $selected_template_id
+ * @property SubmissionStatus $status
+ * @property bool             $consent_accepted
+ * @property string|null      $ip_address
+ * @property string|null      $user_agent
+ */
 class Submission extends Model
 {
     protected $fillable = [

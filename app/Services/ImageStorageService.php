@@ -120,39 +120,36 @@ class ImageStorageService
         $frameW = imagesx($frame);
         $frameH = imagesy($frame);
 
+        // Detect the opaque-white photo window inside the frame by scanning the
+        // centre row and centre column for near-white pixels (r,g,b > 200, alpha = 0).
+        [$winX, $winY, $winW, $winH] = $this->detectPhotoWindow($frame, $frameW, $frameH);
+
         $source = imagecreatefromstring(file_get_contents($fullPath));
         $srcW   = imagesx($source);
         $srcH   = imagesy($source);
 
-        // Cover-fit: determine which portion of the source to use so the result
-        // fills the frame exactly without distortion (center-crop).
-        $frameRatio = $frameW / $frameH;
-        $srcRatio   = $srcW   / $srcH;
+        // Cover-fit the photo into the window (center-crop without distortion).
+        $winRatio = $winW / $winH;
+        $srcRatio = $srcW  / $srcH;
 
-        if ($srcRatio > $frameRatio) {
-            // Source is wider — fit by height, crop sides
-            $cropH   = $srcH;
-            $cropW   = (int) round($srcH * $frameRatio);
-            $cropX   = (int) round(($srcW - $cropW) / 2);
-            $cropY   = 0;
+        if ($srcRatio > $winRatio) {
+            // Source wider than window — fit by height, crop sides
+            $cropH = $srcH;
+            $cropW = (int) round($srcH * $winRatio);
+            $cropX = (int) round(($srcW - $cropW) / 2);
+            $cropY = 0;
         } else {
-            // Source is taller — fit by width, crop top/bottom
-            $cropW   = $srcW;
-            $cropH   = (int) round($srcW / $frameRatio);
-            $cropX   = 0;
-            $cropY   = (int) round(($srcH - $cropH) / 2);
+            // Source taller than window — fit by width, crop top/bottom
+            $cropW = $srcW;
+            $cropH = (int) round($srcW / $winRatio);
+            $cropX = 0;
+            $cropY = (int) round(($srcH - $cropH) / 2);
         }
 
+        // Draw frame first (background), then photo into the white window on top.
         $canvas = imagecreatetruecolor($frameW, $frameH);
-        imagealphablending($canvas, true);
-        imagesavealpha($canvas, true);
-
-        // Scale cropped source region into the canvas
-        imagecopyresampled($canvas, $source, 0, 0, $cropX, $cropY, $frameW, $frameH, $cropW, $cropH);
-
-        // Composite frame on top (frame PNG has transparent window for the photo)
-        imagealphablending($canvas, true);
         imagecopy($canvas, $frame, 0, 0, 0, 0, $frameW, $frameH);
+        imagecopyresampled($canvas, $source, $winX, $winY, $cropX, $cropY, $winW, $winH, $cropW, $cropH);
 
         imagepng($canvas, $fullPath);
 
@@ -168,6 +165,43 @@ class ImageStorageService
             'mime_type'  => 'image/png',
             'size_bytes' => filesize($fullPath),
         ]);
+    }
+
+    private function detectPhotoWindow(\GdImage $frame, int $w, int $h): array
+    {
+        $threshold = 200;
+        $cx = (int) ($w / 2);
+        $cy = (int) ($h / 2);
+
+        $top = 0; $bottom = $h - 1;
+        for ($y = 0; $y < $h; $y++) {
+            $c = imagecolorsforindex($frame, imagecolorat($frame, $cx, $y));
+            if ($c['red'] > $threshold && $c['green'] > $threshold && $c['blue'] > $threshold && $c['alpha'] === 0) {
+                $top = $y; break;
+            }
+        }
+        for ($y = $h - 1; $y >= 0; $y--) {
+            $c = imagecolorsforindex($frame, imagecolorat($frame, $cx, $y));
+            if ($c['red'] > $threshold && $c['green'] > $threshold && $c['blue'] > $threshold && $c['alpha'] === 0) {
+                $bottom = $y; break;
+            }
+        }
+
+        $left = 0; $right = $w - 1;
+        for ($x = 0; $x < $w; $x++) {
+            $c = imagecolorsforindex($frame, imagecolorat($frame, $x, $cy));
+            if ($c['red'] > $threshold && $c['green'] > $threshold && $c['blue'] > $threshold && $c['alpha'] === 0) {
+                $left = $x; break;
+            }
+        }
+        for ($x = $w - 1; $x >= 0; $x--) {
+            $c = imagecolorsforindex($frame, imagecolorat($frame, $x, $cy));
+            if ($c['red'] > $threshold && $c['green'] > $threshold && $c['blue'] > $threshold && $c['alpha'] === 0) {
+                $right = $x; break;
+            }
+        }
+
+        return [$left, $top, $right - $left + 1, $bottom - $top + 1];
     }
 
     // ── Deletion ──────────────────────────────────────────────────────────────
