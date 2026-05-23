@@ -17,10 +17,20 @@
             @csrf
             @if(app()->getLocale() === 'ar')
                 <input type="hidden" name="locale" value="en">
-                <button type="submit" class="locale-btn">English</button>
+                <button type="submit" class="locale-btn">
+                    <svg width="15" height="15" fill="none" stroke="currentColor" stroke-width="1.75" viewBox="0 0 24 24" aria-hidden="true">
+                        <circle cx="12" cy="12" r="9"/><path stroke-linecap="round" d="M3.6 9h16.8M3.6 15h16.8"/><path stroke-linecap="round" d="M12 3a14.5 14.5 0 0 1 0 18M12 3a14.5 14.5 0 0 0 0 18"/>
+                    </svg>
+                    English
+                </button>
             @else
                 <input type="hidden" name="locale" value="ar">
-                <button type="submit" class="locale-btn">العربية</button>
+                <button type="submit" class="locale-btn">
+                    <svg width="15" height="15" fill="none" stroke="currentColor" stroke-width="1.75" viewBox="0 0 24 24" aria-hidden="true">
+                        <circle cx="12" cy="12" r="9"/><path stroke-linecap="round" d="M3.6 9h16.8M3.6 15h16.8"/><path stroke-linecap="round" d="M12 3a14.5 14.5 0 0 1 0 18M12 3a14.5 14.5 0 0 0 0 18"/>
+                    </svg>
+                    العربية
+                </button>
             @endif
         </form>
     </div>

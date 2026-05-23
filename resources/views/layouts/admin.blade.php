@@ -72,10 +72,16 @@
                 @csrf
                 @if(app()->getLocale() === 'ar')
                     <input type="hidden" name="locale" value="en">
-                    <button type="submit" class="btn btn--ghost btn--sm" style="width:100%;color:rgba(255,255,255,0.6);border-color:rgba(255,255,255,0.12);">EN</button>
+                    <button type="submit" class="admin-locale-btn">
+                        <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.75" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path stroke-linecap="round" d="M3.6 9h16.8M3.6 15h16.8"/><path stroke-linecap="round" d="M12 3a14.5 14.5 0 0 1 0 18M12 3a14.5 14.5 0 0 0 0 18"/></svg>
+                        English
+                    </button>
                 @else
                     <input type="hidden" name="locale" value="ar">
-                    <button type="submit" class="btn btn--ghost btn--sm" style="width:100%;color:rgba(255,255,255,0.6);border-color:rgba(255,255,255,0.12);">ع</button>
+                    <button type="submit" class="admin-locale-btn">
+                        <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.75" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path stroke-linecap="round" d="M3.6 9h16.8M3.6 15h16.8"/><path stroke-linecap="round" d="M12 3a14.5 14.5 0 0 1 0 18M12 3a14.5 14.5 0 0 0 0 18"/></svg>
+                        العربية
+                    </button>
                 @endif
             </form>
 

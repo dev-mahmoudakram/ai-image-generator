@@ -113,31 +113,28 @@ $geo-pattern: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' 
 .locale-btn {
     display: inline-flex;
     align-items: center;
-    gap: 6px;
+    gap: 7px;
     padding: 7px 16px;
     font-family: inherit;
     font-size: 13px;
     font-weight: 600;
     letter-spacing: 0.03em;
-    background: rgba(255, 255, 255, 0.72);
-    -webkit-backdrop-filter: blur(8px);
-    backdrop-filter: blur(8px);
-    border: 1px solid rgba(0, 0, 0, 0.1);
+    background: var(--color-gold-pale);
+    border: 1.5px solid var(--color-gold);
     border-radius: 999px;
-    color: var(--color-text);
+    color: var(--color-gold-2);
     cursor: pointer;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
-    transition: background 0.15s, box-shadow 0.15s, color 0.15s;
+    transition: background 0.15s, color 0.15s, border-color 0.15s;
 
-    &::before {
-        content: '🌐';
-        font-size: 14px;
+    svg {
+        flex-shrink: 0;
+        stroke: currentColor;
     }
 
     &:hover {
-        background: rgba(255, 255, 255, 0.92);
-        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
-        color: var(--color-accent);
+        background: var(--color-gold);
+        border-color: var(--color-gold);
+        color: #fff;
     }
 }
 
