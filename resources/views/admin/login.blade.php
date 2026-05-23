@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
+<html lang="{{ str_replace('_', '-', app()->getLocale()) }}" dir="{{ app()->getLocale() === 'ar' ? 'rtl' : 'ltr' }}">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Admin Sign In &mdash; {{ config('app.name') }}</title>
+    <title>{{ __('admin.sign_in_title') }} &mdash; {{ config('app.name') }}</title>
     @vite(['resources/scss/app.scss'])
 </head>
 <body class="public-shell" style="display:grid;place-items:center;min-height:100vh;padding:var(--space-5);">
@@ -14,7 +14,7 @@
         <div style="text-align:center;margin-bottom:var(--space-6);">
             <div style="display:inline-grid;place-items:center;width:52px;height:52px;border-radius:50%;background:linear-gradient(145deg,var(--color-primary),var(--color-primary-2));color:var(--color-gold-soft);font-size:20px;font-weight:900;box-shadow:var(--shadow-lg);margin-bottom:var(--space-4);">م</div>
             <h1 style="font-size:1.6rem;margin-bottom:var(--space-2);">{{ config('app.name') }}</h1>
-            <p style="font-size:14px;color:var(--color-text-muted);margin:0;">Sign in to the admin panel</p>
+            <p style="font-size:14px;color:var(--color-text-muted);margin:0;">{{ __('admin.sign_in_subtitle') }}</p>
         </div>
 
         <div class="card premium-card">
@@ -28,7 +28,7 @@
                 @csrf
 
                 <div class="field">
-                    <label class="field__label" for="email">Email address</label>
+                    <label class="field__label" for="email">{{ __('admin.email') }}</label>
                     <input
                         class="field__input"
                         type="email"
@@ -38,12 +38,12 @@
                         required
                         autofocus
                         autocomplete="email"
-                        placeholder="admin@example.com"
+                        placeholder="{{ __('admin.email_placeholder') }}"
                     >
                 </div>
 
                 <div class="field">
-                    <label class="field__label" for="password">Password</label>
+                    <label class="field__label" for="password">{{ __('admin.password') }}</label>
                     <input
                         class="field__input"
                         type="password"
@@ -57,10 +57,10 @@
 
                 <label class="checkbox" style="margin-bottom:var(--space-5);">
                     <input type="checkbox" name="remember">
-                    <span>Keep me signed in</span>
+                    <span>{{ __('admin.remember') }}</span>
                 </label>
 
-                <button type="submit" class="btn btn--primary btn--block">Sign in</button>
+                <button type="submit" class="btn btn--primary btn--block">{{ __('btn.sign_in') }}</button>
             </form>
         </div>
 

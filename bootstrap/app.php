@@ -14,6 +14,7 @@ return Application::configure(basePath: dirname(__DIR__))
         $middleware->alias([
             'ensure.admin' => \App\Http\Middleware\EnsureAdmin::class,
         ]);
+        $middleware->web(\App\Http\Middleware\SetLocale::class);
         $middleware->redirectGuestsTo(fn () => route('admin.login'));
     })
     ->withExceptions(function (Exceptions $exceptions): void {

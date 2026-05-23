@@ -2,7 +2,7 @@
     'name'     => 'file',
     'uploadTo' => null,
     'accept'   => 'image/jpeg,image/png,image/webp',
-    'hint'     => 'JPG, PNG, or WebP — max 8 MB',
+    'hint'     => null,
 ])
 
 <div x-data="fileDrop()">
@@ -33,10 +33,10 @@
                       d="M3 16.5v2.25A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75V16.5m-13.5-9L12 3m0 0 4.5 4.5M12 3v13.5" />
             </svg>
             <p class="drop-zone__title">
-                Drop your file here<br>
-                <span>or click to browse</span>
+                {{ __('file_drop.title') }}<br>
+                <span>{{ __('file_drop.browse') }}</span>
             </p>
-            <p class="drop-zone__hint">{{ $hint }}</p>
+            <p class="drop-zone__hint">{{ $hint ?? __('field.image_hint') }}</p>
         </div>
 
         {{-- File name chip --}}

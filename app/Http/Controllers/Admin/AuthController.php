@@ -29,7 +29,7 @@ class AuthController extends Controller
         if (Auth::attempt($credentials, $request->boolean('remember'))) {
             if (! Auth::user()->is_admin) {
                 Auth::logout();
-                return back()->withErrors(['email' => 'Access denied.'])->onlyInput('email');
+                return back()->withErrors(['email' => __('admin.access_denied')])->onlyInput('email');
             }
 
             $request->session()->regenerate();
@@ -38,7 +38,7 @@ class AuthController extends Controller
         }
 
         return back()
-            ->withErrors(['email' => 'Invalid credentials.'])
+            ->withErrors(['email' => __('admin.invalid_credentials')])
             ->onlyInput('email');
     }
 

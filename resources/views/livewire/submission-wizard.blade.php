@@ -2,17 +2,17 @@
     @if($step === 'form')
         <div class="hero-grid">
             <section class="hero-panel" aria-labelledby="hero-title">
-                <span class="eyebrow" style="color:var(--color-gold-soft);">Saudi AI Portrait</span>
+                <span class="eyebrow" style="color:var(--color-gold-soft);">{{ __('home.title') }}</span>
                 <h1 id="hero-title" style="margin-top:var(--space-4);">
-                    Create a portrait for a Saudi moment.
+                    {{ __('home.headline') }}
                 </h1>
                 <p style="max-width:560px;font-size:1.03rem;margin-top:var(--space-4);">
-                    Upload a selfie, choose a Saudi-inspired visual style, and receive a polished AI portrait designed for events, campaigns, and memorable occasions.
+                    {{ __('home.description') }}
                 </p>
                 <div class="hero-panel__meta" aria-label="Experience highlights">
-                    <span class="hero-chip">Heritage inspired</span>
-                    <span class="hero-chip">Mobile ready</span>
-                    <span class="hero-chip">Private upload flow</span>
+                    <span class="hero-chip">{{ __('home.chip_heritage') }}</span>
+                    <span class="hero-chip">{{ __('home.chip_mobile') }}</span>
+                    <span class="hero-chip">{{ __('home.chip_private') }}</span>
                 </div>
             </section>
 
@@ -20,29 +20,29 @@
                 @include('livewire.partials.submission-steps', ['step' => $step])
 
                 <div class="card premium-card">
-                    <span class="eyebrow">Step 01</span>
-                    <h2 id="form-title">Your information</h2>
-                    <p>We use these details to prepare and track your portrait request.</p>
+                    <span class="eyebrow">{{ __('wizard.step_info') }}</span>
+                    <h2 id="form-title">{{ __('wizard.step_info_label') }}</h2>
+                    <p>{{ __('wizard.step_info_sub') }}</p>
 
                     <form novalidate x-data x-on:submit.prevent="
                         if (window.__syncPhone) await window.__syncPhone();
                         $wire.submitForm();
                     ">
                         <div class="field">
-                            <label class="field__label" for="name">Full name</label>
+                            <label class="field__label" for="name">{{ __('wizard.full_name') }}</label>
                             <input
                                 class="field__input"
                                 type="text"
                                 id="name"
                                 wire:model.blur="name"
                                 autocomplete="name"
-                                placeholder="Your name"
+                                placeholder="{{ __('wizard.name_placeholder') }}"
                             >
                             @error('name') <p class="field__error">{{ $message }}</p> @enderror
                         </div>
 
                         <div class="field field--phone">
-                            <label class="field__label" for="phone">Phone number</label>
+                            <label class="field__label" for="phone">{{ __('wizard.phone') }}</label>
                             <div x-data="phoneInput" wire:ignore>
                                 <input
                                     x-ref="input"
@@ -56,27 +56,27 @@
                         </div>
 
                         <div class="field">
-                            <label class="field__label" for="email">Email <span style="font-weight:400;opacity:0.6;">(optional)</span></label>
+                            <label class="field__label" for="email">{{ __('wizard.email') }} <span style="font-weight:400;opacity:0.6;">{{ __('wizard.email_optional') }}</span></label>
                             <input
                                 class="field__input"
                                 type="email"
                                 id="email"
                                 wire:model.blur="email"
                                 autocomplete="email"
-                                placeholder="you@example.com"
+                                placeholder="{{ __('wizard.email_placeholder') }}"
                             >
                             @error('email') <p class="field__error">{{ $message }}</p> @enderror
                         </div>
 
                         <label class="checkbox" style="margin-bottom:var(--space-5);">
                             <input type="checkbox" wire:model="consent">
-                            <span>I consent to my selfie being processed by AI to generate a portrait image. I can request deletion at any time.</span>
+                            <span>{{ __('wizard.consent') }}</span>
                         </label>
                         @error('consent') <p class="field__error" style="margin-top:calc(-1 * var(--space-3));margin-bottom:var(--space-4);">{{ $message }}</p> @enderror
 
                         <button type="submit" class="btn btn--primary btn--block" wire:loading.attr="disabled">
-                            <span wire:loading.remove wire:target="submitForm">Continue</span>
-                            <span wire:loading wire:target="submitForm">Please wait...</span>
+                            <span wire:loading.remove wire:target="submitForm">{{ __('btn.continue') }}</span>
+                            <span wire:loading wire:target="submitForm">{{ __('btn.please_wait') }}</span>
                         </button>
                     </form>
                 </div>
@@ -88,23 +88,23 @@
             @include('livewire.partials.submission-steps', ['step' => $step])
 
             <div class="card premium-card">
-                <span class="eyebrow">Step 02</span>
-                <h2 id="selfie-title">Capture your selfie</h2>
-                <p>Face the camera straight-on in good lighting for the best generated result.</p>
+                <span class="eyebrow">{{ __('wizard.step_selfie') }}</span>
+                <h2 id="selfie-title">{{ __('wizard.step_selfie_label') }}</h2>
+                <p>{{ __('wizard.step_selfie_sub') }}</p>
 
                 @if($selfieAttached)
                     <div class="success-card">
                         <div class="success-mark">OK</div>
-                        <h3>Photo uploaded successfully</h3>
-                        <p>Ready to choose your style.</p>
+                        <h3>{{ __('wizard.photo_success') }}</h3>
+                        <p>{{ __('wizard.photo_ready') }}</p>
                         <button
                             type="button"
                             class="btn btn--primary btn--block"
                             wire:click="nextStep"
                             wire:loading.attr="disabled"
                         >
-                            <span wire:loading.remove wire:target="nextStep">Choose style</span>
-                            <span wire:loading wire:target="nextStep">Please wait&hellip;</span>
+                            <span wire:loading.remove wire:target="nextStep">{{ __('btn.choose_style') }}</span>
+                            <span wire:loading wire:target="nextStep">{{ __('btn.please_wait') }}&hellip;</span>
                         </button>
                     </div>
                 @else
@@ -136,21 +136,21 @@
                                     class="camera__preview camera-placeholder"
                                 >
                                     <span class="camera-placeholder__icon" aria-hidden="true">AI</span>
-                                    <span>Camera preview will appear here</span>
+                                    <span>{{ __('wizard.camera_placeholder') }}</span>
                                 </div>
 
                                 <div class="camera__actions">
-                                    <button type="button" class="btn btn--primary" data-camera-open>Open camera</button>
-                                    <button type="button" class="btn btn--primary" data-camera-capture hidden>Take photo</button>
-                                    <button type="button" class="btn" data-camera-cancel hidden>Cancel</button>
-                                    <button type="button" class="btn" data-camera-retake hidden>Retake</button>
+                                    <button type="button" class="btn btn--primary" data-camera-open>{{ __('btn.open_camera') }}</button>
+                                    <button type="button" class="btn btn--primary" data-camera-capture hidden>{{ __('btn.take_photo') }}</button>
+                                    <button type="button" class="btn" data-camera-cancel hidden>{{ __('btn.cancel') }}</button>
+                                    <button type="button" class="btn" data-camera-retake hidden>{{ __('btn.retake') }}</button>
                                 </div>
 
                                 <p data-selfie-status class="camera-note" hidden></p>
                             </div>
 
                             <div class="upload-divider">
-                                <span>or upload from your device</span>
+                                <span>{{ __('wizard.upload_or') }}</span>
                             </div>
 
                             <div
@@ -161,7 +161,7 @@
                             >
                                 <img
                                     data-selfie-preview
-                                    alt="Selected selfie preview"
+                                    alt="{{ __('wizard.photo_success') }}"
                                     class="drop-zone__img"
                                     hidden
                                 >
@@ -172,10 +172,10 @@
                                               d="M3 16.5v2.25A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75V16.5m-13.5-9L12 3m0 0 4.5 4.5M12 3v13.5" />
                                     </svg>
                                     <p class="drop-zone__title">
-                                        Drop your file here<br>
-                                        <span>or click to browse</span>
+                                        {{ __('file_drop.title') }}<br>
+                                        <span>{{ __('file_drop.browse') }}</span>
                                     </p>
-                                    <p class="drop-zone__hint">JPG, PNG, or WebP. Max 8 MB.</p>
+                                    <p class="drop-zone__hint">{{ __('wizard.file_hint') }}</p>
                                 </div>
 
                                 <div class="drop-zone__badge" data-selfie-file-name hidden></div>
@@ -191,16 +191,16 @@
 
                         <div data-selfie-success class="success-card" hidden>
                             <div class="success-mark">OK</div>
-                            <h3>Photo uploaded successfully</h3>
-                            <p>Ready to choose your style.</p>
+                            <h3>{{ __('wizard.photo_success') }}</h3>
+                            <p>{{ __('wizard.photo_ready') }}</p>
                             <button
                                 type="button"
                                 class="btn btn--primary btn--block"
                                 wire:click="nextStep"
                                 wire:loading.attr="disabled"
                             >
-                                <span wire:loading.remove wire:target="nextStep">Choose style</span>
-                                <span wire:loading wire:target="nextStep">Please wait&hellip;</span>
+                                <span wire:loading.remove wire:target="nextStep">{{ __('btn.choose_style') }}</span>
+                                <span wire:loading wire:target="nextStep">{{ __('btn.please_wait') }}&hellip;</span>
                             </button>
                         </div>
                     </div>
@@ -213,21 +213,21 @@
             @include('livewire.partials.submission-steps', ['step' => $step])
 
             <div class="page-heading">
-                <span class="eyebrow">Step 03</span>
-                <h2 id="template-title">Choose your Saudi style</h2>
-                <p>Select the visual world you want for your AI portrait.</p>
+                <span class="eyebrow">{{ __('wizard.step_style') }}</span>
+                <h2 id="template-title">{{ __('wizard.step_style_label') }}</h2>
+                <p>{{ __('wizard.step_style_sub') }}</p>
             </div>
 
             <div wire:loading wire:target="chooseTemplate" class="card success-card">
                 <div class="spinner" style="margin-bottom:var(--space-4);"></div>
-                <h3>Preparing your generation</h3>
-                <p>Please wait while your selected style is queued.</p>
+                <h3>{{ __('wizard.preparing') }}</h3>
+                <p>{{ __('wizard.please_wait') }}</p>
             </div>
 
             <div wire:loading.remove wire:target="chooseTemplate">
                 @if($templates->isEmpty())
                     <div class="card success-card">
-                        <p>No styles available right now. Please try again later.</p>
+                        <p>{{ __('wizard.no_styles') }}</p>
                     </div>
                 @else
                     <div class="template-gallery">
@@ -250,7 +250,7 @@
                                     @if($template->description)
                                         <span class="template-card__desc">{{ Str::limit($template->description, 90) }}</span>
                                     @endif
-                                    <span class="template-card__action">Generate</span>
+                                    <span class="template-card__action">{{ __('btn.generate') }}</span>
                                 </span>
                             </button>
                         @endforeach

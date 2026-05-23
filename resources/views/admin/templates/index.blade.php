@@ -1,15 +1,15 @@
 @extends('layouts.admin')
-@section('title', 'Templates')
+@section('title', __('templates.title'))
 
 @section('content')
     <div class="admin-page-header">
         <div>
-            <span class="eyebrow">Creative library</span>
-            <h1 class="admin-page-header__title">Templates</h1>
+            <span class="eyebrow">{{ __('templates.library') }}</span>
+            <h1 class="admin-page-header__title">{{ __('templates.title') }}</h1>
         </div>
         <a href="{{ route('admin.templates.create') }}" class="btn btn--primary">
             <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4"/></svg>
-            New template
+            {{ __('btn.new_template') }}
         </a>
     </div>
 
@@ -17,17 +17,17 @@
         @if($templates->isEmpty())
             <div class="table-empty">
                 <div style="font-size:32px;margin-bottom:var(--space-3);opacity:0.3;">◆</div>
-                No templates yet. Create your first one.
+                {{ __('templates.none') }}
             </div>
         @else
             <div class="table-wrap">
                 <table class="table">
                     <thead>
                         <tr>
-                            <th style="width:76px;">Preview</th>
-                            <th>Title &amp; description</th>
-                            <th style="width:80px;text-align:center;">Order</th>
-                            <th style="width:100px;text-align:center;">Status</th>
+                            <th style="width:76px;">{{ __('table.preview') }}</th>
+                            <th>{{ __('table.title_desc') }}</th>
+                            <th style="width:80px;text-align:center;">{{ __('table.order') }}</th>
+                            <th style="width:100px;text-align:center;">{{ __('table.status') }}</th>
                             <th style="width:140px;"></th>
                         </tr>
                     </thead>
@@ -58,18 +58,18 @@
                                         <button type="submit"
                                             class="badge {{ $template->is_active ? 'badge--completed' : 'badge--cancelled' }}"
                                             style="cursor:pointer;background:none;border:1px solid;padding:5px 10px;font-size:11px;font-weight:700;"
-                                            title="Click to toggle">
-                                            {{ $template->is_active ? 'Active' : 'Inactive' }}
+                                            title="{{ __('templates.toggle_hint') }}">
+                                            {{ $template->is_active ? __('templates.active') : __('templates.inactive') }}
                                         </button>
                                     </form>
                                 </td>
                                 <td>
                                     <div style="display:flex;align-items:center;gap:var(--space-2);justify-content:flex-end;">
-                                        <a href="{{ route('admin.templates.edit', $template) }}" class="btn btn--ghost btn--sm">Edit</a>
+                                        <a href="{{ route('admin.templates.edit', $template) }}" class="btn btn--ghost btn--sm">{{ __('btn.edit') }}</a>
                                         <form method="POST" action="{{ route('admin.templates.destroy', $template) }}"
-                                              onsubmit="return confirm('Delete this template permanently?');">
+                                              onsubmit="return confirm('{{ __('templates.confirm_delete') }}');">
                                             @csrf @method('DELETE')
-                                            <button type="submit" class="btn btn--danger btn--sm">Delete</button>
+                                            <button type="submit" class="btn btn--danger btn--sm">{{ __('btn.delete') }}</button>
                                         </form>
                                     </div>
                                 </td>

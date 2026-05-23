@@ -1,14 +1,14 @@
 @extends('layouts.admin')
-@section('title', 'Submission #' . $submission->id)
+@section('title', __('submissions.submission') . ' #' . $submission->id)
 
 @section('content')
 
     {{-- ── Page header ─────────────────────────────────────────────────────── --}}
     <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:var(--space-4);margin-bottom:var(--space-5);flex-wrap:wrap;">
         <div style="display:flex;align-items:center;gap:var(--space-4);flex-wrap:wrap;">
-            <a href="{{ route('admin.submissions.index') }}" class="btn btn--ghost btn--sm">&larr; Back</a>
+            <a href="{{ route('admin.submissions.index') }}" class="btn btn--ghost btn--sm">&larr; {{ __('btn.back') }}</a>
             <div>
-                <span class="eyebrow">Submission</span>
+                <span class="eyebrow">{{ __('submissions.submission') }}</span>
                 <div style="display:flex;align-items:center;gap:var(--space-3);margin-top:4px;">
                     <h1 style="margin:0;font-size:2rem;font-weight:900;letter-spacing:-0.04em;line-height:1;color:var(--color-text);">#{{ $submission->id }}</h1>
                     <span class="badge badge--{{ str_replace('_', '-', $submission->status->value) }}">{{ $submission->status->label() }}</span>
@@ -19,15 +19,15 @@
         <div style="display:flex;gap:var(--space-2);align-items:center;flex-wrap:wrap;">
             @if($submission->status->canCancelQueued())
                 <form method="POST" action="{{ route('admin.submissions.cancel', $submission) }}"
-                      onsubmit="return confirm('Cancel this queued generation?');">
+                      onsubmit="return confirm('{{ __('submissions.confirm_cancel') }}');">
                     @csrf
-                    <button type="submit" class="btn btn--danger">Cancel job</button>
+                    <button type="submit" class="btn btn--danger">{{ __('btn.cancel_job') }}</button>
                 </form>
             @endif
             @if($submission->status->canRetry())
                 <form method="POST" action="{{ route('admin.submissions.retry', $submission) }}">
                     @csrf
-                    <button type="submit" class="btn btn--primary">Retry generation</button>
+                    <button type="submit" class="btn btn--primary">{{ __('btn.retry') }}</button>
                 </form>
             @endif
         </div>
@@ -36,19 +36,19 @@
     {{-- ── Quick status bar ────────────────────────────────────────────────── --}}
     <div class="sub-status-bar">
         <div class="sub-status-bar__item">
-            <div class="sub-status-bar__label">Status</div>
+            <div class="sub-status-bar__label">{{ __('table.status') }}</div>
             <div class="sub-status-bar__value">{{ $submission->status->label() }}</div>
         </div>
         <div class="sub-status-bar__item">
-            <div class="sub-status-bar__label">Template</div>
+            <div class="sub-status-bar__label">{{ __('table.template') }}</div>
             <div class="sub-status-bar__value">{{ $submission->template?->title ?? '—' }}</div>
         </div>
         <div class="sub-status-bar__item">
-            <div class="sub-status-bar__label">Submitted</div>
+            <div class="sub-status-bar__label">{{ __('table.submitted') }}</div>
             <div class="sub-status-bar__value">{{ $submission->created_at->format('d M Y, H:i') }}</div>
         </div>
         <div class="sub-status-bar__item">
-            <div class="sub-status-bar__label">Attempts</div>
+            <div class="sub-status-bar__label">{{ __('submissions.attempts') }}</div>
             <div class="sub-status-bar__value">{{ $submission->attempts->count() }}</div>
         </div>
     </div>
@@ -61,7 +61,7 @@
             <div class="contact-hero">
                 <div class="contact-hero__avatar">{{ mb_substr($submission->contact?->name ?? '?', 0, 1) }}</div>
                 <div>
-                    <div class="contact-hero__name">{{ $submission->contact?->name ?? 'Unknown' }}</div>
+                    <div class="contact-hero__name">{{ $submission->contact?->name ?? '—' }}</div>
                     @if($submission->contact?->phone)
                         <div class="contact-hero__sub">{{ $submission->contact->phone }}</div>
                     @endif
@@ -70,15 +70,15 @@
 
             <div>
                 <div class="detail-row">
-                    <span class="detail-row__label">Name</span>
+                    <span class="detail-row__label">{{ __('table.name') }}</span>
                     <span class="detail-row__value">{{ $submission->contact?->name ?? '—' }}</span>
                 </div>
                 <div class="detail-row">
-                    <span class="detail-row__label">Phone</span>
+                    <span class="detail-row__label">{{ __('table.phone') }}</span>
                     <span class="detail-row__value td-mono" style="font-size:13px;">{{ $submission->contact?->phone ?? '—' }}</span>
                 </div>
                 <div class="detail-row">
-                    <span class="detail-row__label">Email</span>
+                    <span class="detail-row__label">{{ __('table.email') }}</span>
                     <span class="detail-row__value" style="color:var(--color-text-dim);">{{ $submission->contact?->email ?? '—' }}</span>
                 </div>
             </div>
@@ -86,23 +86,23 @@
 
         {{-- Submission details --}}
         <div class="card">
-            <div class="card-section-title">Submission details</div>
+            <div class="card-section-title">{{ __('submissions.details') }}</div>
 
             <div>
                 <div class="detail-row">
-                    <span class="detail-row__label">Template</span>
+                    <span class="detail-row__label">{{ __('table.template') }}</span>
                     <span class="detail-row__value">{{ $submission->template?->title ?? '—' }}</span>
                 </div>
                 <div class="detail-row">
-                    <span class="detail-row__label">IP</span>
+                    <span class="detail-row__label">{{ __('submissions.ip') }}</span>
                     <span class="detail-row__value td-mono" style="font-size:13px;">{{ $submission->ip_address ?? '—' }}</span>
                 </div>
                 <div class="detail-row">
-                    <span class="detail-row__label">Created</span>
+                    <span class="detail-row__label">{{ __('submissions.created') }}</span>
                     <span class="detail-row__value" style="font-size:13px;">{{ $submission->created_at->format('d M Y, H:i:s') }}</span>
                 </div>
                 <div class="detail-row">
-                    <span class="detail-row__label">Token</span>
+                    <span class="detail-row__label">{{ __('submissions.token') }}</span>
                     <span class="detail-row__value" style="font-family:'Fira Code','Cascadia Code',monospace;font-size:10.5px;color:var(--color-text-muted);word-break:break-all;">{{ $submission->tracking_token }}</span>
                 </div>
             </div>
@@ -112,9 +112,9 @@
     {{-- ── Generated image ─────────────────────────────────────────────────── --}}
     @if($submission->generatedImage)
         <div class="card" style="margin-bottom:var(--space-5);">
-            <div class="card-section-title">Generated portrait</div>
+            <div class="card-section-title">{{ __('submissions.generated_portrait') }}</div>
             <div class="portrait-frame" style="max-width:360px;">
-                <img src="{{ $submission->generatedImage->url() }}" alt="Generated portrait">
+                <img src="{{ $submission->generatedImage->url() }}" alt="{{ __('submissions.generated_portrait') }}">
             </div>
         </div>
     @endif
@@ -123,27 +123,27 @@
     <div class="card" style="padding:0;overflow:hidden;margin-bottom:var(--space-5);">
         <div class="table-card-header">
             <div>
-                <h2 class="table-card-header__title">Generation attempts</h2>
-                <p class="table-card-header__sub">{{ $submission->attempts->count() }} attempt(s) recorded</p>
+                <h2 class="table-card-header__title">{{ __('submissions.generation_attempts') }}</h2>
+                <p class="table-card-header__sub">{{ $submission->attempts->count() }} {{ __('submissions.attempts_recorded') }}</p>
             </div>
         </div>
 
         @if($submission->attempts->isEmpty())
             <div class="table-empty">
                 <div style="font-size:28px;margin-bottom:12px;opacity:0.2;">◆</div>
-                No generation attempts yet.
+                {{ __('submissions.no_attempts') }}
             </div>
         @else
             <div class="table-wrap">
                 <table class="table">
                     <thead>
                         <tr>
-                            <th style="width:48px;">#</th>
-                            <th>Provider</th>
-                            <th>Model</th>
-                            <th>Status</th>
-                            <th>Error</th>
-                            <th style="width:88px;">Duration</th>
+                            <th style="width:48px;">{{ __('table.hash') }}</th>
+                            <th>{{ __('table.provider') }}</th>
+                            <th>{{ __('table.model') }}</th>
+                            <th>{{ __('table.status') }}</th>
+                            <th>{{ __('table.error') }}</th>
+                            <th style="width:88px;">{{ __('table.duration') }}</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -170,10 +170,10 @@
 
     {{-- ── Event log ───────────────────────────────────────────────────────── --}}
     <div class="card">
-        <div class="card-section-title">Event log</div>
+        <div class="card-section-title">{{ __('submissions.event_log') }}</div>
 
         @if($submission->events->isEmpty())
-            <p style="color:var(--color-text-muted);font-size:14px;margin:0;">No events recorded.</p>
+            <p style="color:var(--color-text-muted);font-size:14px;margin:0;">{{ __('submissions.no_events') }}</p>
         @else
             <div class="event-timeline">
                 @foreach($submission->events->sortBy('id') as $event)

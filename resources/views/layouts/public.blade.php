@@ -1,6 +1,6 @@
 @props(['title' => trim($__env->yieldContent('title')) ?: config('app.name')])
 <!DOCTYPE html>
-<html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
+<html lang="{{ str_replace('_', '-', app()->getLocale()) }}" dir="{{ app()->getLocale() === 'ar' ? 'rtl' : 'ltr' }}">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -12,12 +12,25 @@
 </head>
 <body class="public-shell">
 
+    <div class="locale-switcher">
+        <form method="POST" action="{{ route('locale.switch') }}">
+            @csrf
+            @if(app()->getLocale() === 'ar')
+                <input type="hidden" name="locale" value="en">
+                <button type="submit" class="locale-btn">English</button>
+            @else
+                <input type="hidden" name="locale" value="ar">
+                <button type="submit" class="locale-btn">العربية</button>
+            @endif
+        </form>
+    </div>
+
     {{-- <header class="public-header">
         <a href="{{ route('home') }}" class="brand-mark" aria-label="{{ config('app.name') }}">
             <span class="brand-mark__seal" aria-hidden="true">م</span>
             <span>
                 {{ config('app.name') }}
-                <span class="brand-mark__sub">Saudi Portrait Experience</span>
+                <span class="brand-mark__sub">{{ __('public.app_subtitle') }}</span>
             </span>
         </a>
     </header> --}}
@@ -30,7 +43,8 @@
     </main>
 
     <footer class="public-footer">
-        <small>&copy; {{ date('Y') }} {{ config('app.name') }} &mdash; Crafted for premium Saudi moments.</small>
+        <small>&copy; {{ date('Y') }} {{ config('app.name') }} &mdash; {{ __('public.footer') }}</small>
+
     </footer>
 
 </body>

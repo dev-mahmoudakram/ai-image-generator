@@ -4,10 +4,14 @@ use App\Http\Controllers\Admin\AuthController;
 use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Admin\SubmissionController as AdminSubmissionController;
 use App\Http\Controllers\Admin\TemplateController as AdminTemplateController;
+use App\Http\Controllers\LocaleController;
 use App\Http\Controllers\SubmissionSelfieController;
 use App\Livewire\SubmissionStatus;
 use App\Livewire\SubmissionWizard;
 use Illuminate\Support\Facades\Route;
+
+// Locale switcher
+Route::post('/locale', [LocaleController::class, 'switch'])->name('locale.switch');
 
 // Public
 Route::get('/', SubmissionWizard::class)->name('home');

@@ -1,9 +1,9 @@
 @if ($paginator->hasPages())
 <nav class="pagination-nav" role="navigation" aria-label="Pagination">
     <div class="pagination-info">
-        Showing
+        {{ __('pagination.showing') }}
         <strong>{{ $paginator->firstItem() }}</strong>–<strong>{{ $paginator->lastItem() }}</strong>
-        of <strong>{{ $paginator->total() }}</strong>
+        {{ __('pagination.of') }} <strong>{{ $paginator->total() }}</strong>
     </div>
 
     <div class="pagination-links">
@@ -13,7 +13,7 @@
                 <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7"/></svg>
             </span>
         @else
-            <a href="{{ $paginator->previousPageUrl() }}" class="page-btn" rel="prev" aria-label="Previous page">
+            <a href="{{ $paginator->previousPageUrl() }}" class="page-btn" rel="prev" aria-label="{{ __('pagination.previous') }}">
                 <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7"/></svg>
             </a>
         @endif
@@ -37,7 +37,7 @@
 
         {{-- Next --}}
         @if ($paginator->hasMorePages())
-            <a href="{{ $paginator->nextPageUrl() }}" class="page-btn" rel="next" aria-label="Next page">
+            <a href="{{ $paginator->nextPageUrl() }}" class="page-btn" rel="next" aria-label="{{ __('pagination.next') }}">
                 <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"/></svg>
             </a>
         @else

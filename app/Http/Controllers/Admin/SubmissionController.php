@@ -32,13 +32,13 @@ class SubmissionController extends Controller
     {
         $this->submissionService->retry($submission);
 
-        return back()->with('success', 'Submission re-queued for generation.');
+        return back()->with('success', __('submissions.requeued'));
     }
 
     public function cancel(Submission $submission): RedirectResponse
     {
         $deletedJobs = $this->submissionService->cancelQueuedGeneration($submission);
 
-        return back()->with('success', "Submission cancelled. Removed {$deletedJobs} queued job(s).");
+        return back()->with('success', __('submissions.cancelled', ['count' => $deletedJobs]));
     }
 }

@@ -1,5 +1,5 @@
 @extends('layouts.public')
-@section('title', 'Your submission')
+@section('title', __('track.title'))
 
 @section('content')
     <div class="status-shell">
@@ -7,33 +7,33 @@
             <span class="badge badge--{{ str_replace('_', '-', $submission->status->value) }}">
                 {{ $submission->status->label() }}
             </span>
-            <h1 style="margin-top:var(--space-4);">Submission status</h1>
+            <h1 style="margin-top:var(--space-4);">{{ __('track.status') }}</h1>
         </div>
 
         @if($submission->status->value === 'completed' && $submission->generatedImage)
             <div class="card premium-card">
                 <div class="portrait-frame" style="margin-bottom:var(--space-5);">
                     <img src="{{ $submission->generatedImage->url() }}"
-                         alt="Your AI portrait">
+                         alt="{{ __('status.ready_title') }}">
                 </div>
                 <a href="{{ $submission->generatedImage->url() }}"
                    download
                    class="btn btn--primary btn--block">
-                    Download image
+                    {{ __('track.download') }}
                 </a>
             </div>
         @elseif($submission->status->isGenerating())
             <div class="card premium-card success-card">
                 <div class="processing-orb" aria-hidden="true"></div>
-                <p>Your image is being generated. This usually takes under a minute.</p>
+                <p>{{ __('track.generating') }}</p>
             </div>
         @elseif($submission->status->value === 'failed')
             <div class="card premium-card success-card">
-                <p style="color:var(--color-danger);font-weight:800;">Generation failed. Please try again or contact support.</p>
+                <p style="color:var(--color-danger);font-weight:800;">{{ __('track.failed') }}</p>
             </div>
         @else
             <div class="card premium-card success-card">
-                <p>Waiting to process...</p>
+                <p>{{ __('track.waiting') }}</p>
             </div>
         @endif
     </div>

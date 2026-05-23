@@ -16,17 +16,7 @@ enum SubmissionStatus: string
 
     public function label(): string
     {
-        return match($this) {
-            self::Draft            => 'Draft',
-            self::FormCompleted    => 'Form Completed',
-            self::SelfieUploaded   => 'Selfie Uploaded',
-            self::TemplateSelected => 'Template Selected',
-            self::Queued           => 'Queued',
-            self::Processing       => 'Processing',
-            self::Completed        => 'Completed',
-            self::Failed           => 'Failed',
-            self::Cancelled        => 'Cancelled',
-        };
+        return __('status_label.' . $this->value);
     }
 
     public function badgeClass(): string

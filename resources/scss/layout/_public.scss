@@ -103,6 +103,44 @@ $geo-pattern: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' 
     }
 }
 
+.locale-switcher {
+    position: fixed;
+    top: var(--space-4);
+    right: var(--space-4);
+    z-index: 100;
+}
+
+.locale-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 7px 16px;
+    font-family: inherit;
+    font-size: 13px;
+    font-weight: 600;
+    letter-spacing: 0.03em;
+    background: rgba(255, 255, 255, 0.72);
+    -webkit-backdrop-filter: blur(8px);
+    backdrop-filter: blur(8px);
+    border: 1px solid rgba(0, 0, 0, 0.1);
+    border-radius: 999px;
+    color: var(--color-text);
+    cursor: pointer;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+    transition: background 0.15s, box-shadow 0.15s, color 0.15s;
+
+    &::before {
+        content: '🌐';
+        font-size: 14px;
+    }
+
+    &:hover {
+        background: rgba(255, 255, 255, 0.92);
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
+        color: var(--color-accent);
+    }
+}
+
 // ── Experience shell ──────────────────────────────────────────────────────────
 .experience-shell {
     display: grid;

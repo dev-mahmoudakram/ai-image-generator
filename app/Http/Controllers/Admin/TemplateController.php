@@ -41,7 +41,7 @@ class TemplateController extends Controller
         $this->templateService->create($data, $request->file('image'));
 
         return redirect()->route('admin.templates.index')
-            ->with('success', 'Template created.');
+            ->with('success', __('templates.created'));
     }
 
     public function edit(Template $template): View
@@ -65,7 +65,7 @@ class TemplateController extends Controller
         $this->templateService->update($template, $data, $request->file('image'));
 
         return redirect()->route('admin.templates.index')
-            ->with('success', 'Template updated.');
+            ->with('success', __('templates.updated'));
     }
 
     public function destroy(Template $template): RedirectResponse
@@ -73,13 +73,13 @@ class TemplateController extends Controller
         $this->templateService->delete($template);
 
         return redirect()->route('admin.templates.index')
-            ->with('success', 'Template deleted.');
+            ->with('success', __('templates.deleted'));
     }
 
     public function toggle(Template $template): RedirectResponse
     {
         $this->templateService->toggleActive($template);
 
-        return back()->with('success', 'Template status updated.');
+        return back()->with('success', __('templates.status_updated'));
     }
 }

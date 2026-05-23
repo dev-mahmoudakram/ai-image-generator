@@ -1,33 +1,33 @@
 @extends('layouts.admin')
-@section('title', 'Submissions')
+@section('title', __('submissions.title'))
 
 @section('content')
     <div class="admin-page-header">
         <div>
-            <span class="eyebrow">Operations</span>
-            <h1 class="admin-page-header__title">Submissions</h1>
+            <span class="eyebrow">{{ __('submissions.operations') }}</span>
+            <h1 class="admin-page-header__title">{{ __('submissions.title') }}</h1>
         </div>
-        <span style="font-size:13px;color:var(--color-text-muted);">{{ $submissions->total() }} total</span>
+        <span style="font-size:13px;color:var(--color-text-muted);">{{ $submissions->total() }}</span>
     </div>
 
     <div class="card" style="padding:0;overflow:hidden;">
         @if($submissions->isEmpty())
             <div class="table-empty">
                 <div style="font-size:28px;margin-bottom:12px;opacity:0.2;">◆</div>
-                No submissions yet.
+                {{ __('submissions.none') }}
             </div>
         @else
             <div class="table-wrap">
                 <table class="table">
                     <thead>
                         <tr>
-                            <th style="width:56px;">#</th>
-                            <th>Name</th>
-                            <th>Phone</th>
-                            <th>Template</th>
-                            <th>Status</th>
-                            <th>Date</th>
-                            <th style="width:148px;text-align:right;padding-right:24px;">Actions</th>
+                            <th style="width:56px;">{{ __('table.hash') }}</th>
+                            <th>{{ __('table.name') }}</th>
+                            <th>{{ __('table.phone') }}</th>
+                            <th>{{ __('table.template') }}</th>
+                            <th>{{ __('table.status') }}</th>
+                            <th>{{ __('table.date') }}</th>
+                            <th style="width:148px;text-align:right;padding-right:24px;">{{ __('table.actions') }}</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -61,12 +61,12 @@
                                     <div style="display:flex;align-items:center;gap:8px;justify-content:flex-end;">
                                         @if($submission->status->canCancelQueued())
                                             <form method="POST" action="{{ route('admin.submissions.cancel', $submission) }}"
-                                                  onsubmit="return confirm('Cancel this queued generation?');">
+                                                  onsubmit="return confirm('{{ __('submissions.confirm_cancel') }}');">
                                                 @csrf
-                                                <button type="submit" class="btn btn--danger btn--sm">Cancel</button>
+                                                <button type="submit" class="btn btn--danger btn--sm">{{ __('btn.cancel') }}</button>
                                             </form>
                                         @endif
-                                        <a href="{{ route('admin.submissions.show', $submission) }}" class="btn btn--ghost btn--sm">View</a>
+                                        <a href="{{ route('admin.submissions.show', $submission) }}" class="btn btn--ghost btn--sm">{{ __('btn.view') }}</a>
                                     </div>
                                 </td>
                             </tr>
