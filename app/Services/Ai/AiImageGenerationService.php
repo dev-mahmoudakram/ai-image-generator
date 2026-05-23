@@ -139,6 +139,7 @@ Important:
 - Do not recreate the image as an exact clone
 - Keep the final result photorealistic, clean, high-quality, and visually premium
 - Maintain natural facial proportions and realistic lighting
+- Output as a vertical portrait image with a 9:16 aspect ratio (taller than wide)
 PROMPT;
 
         if ($promptHint = trim($promptHint)) {

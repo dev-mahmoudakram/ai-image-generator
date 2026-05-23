@@ -101,6 +101,75 @@ class ImageStorageService
         ];
     }
 
+    // ── Frame compositing ─────────────────────────────────────────────────────
+
+    public function applyFrame(SubmissionAsset $asset): void
+    {
+        if (! extension_loaded('gd')) {
+            return;
+        }
+
+        $framePath = resource_path('assets/frame.png');
+        $fullPath  = Storage::disk($asset->disk)->path($asset->path);
+
+        if (! file_exists($framePath) || ! file_exists($fullPath)) {
+            return;
+        }
+
+        $frame  = imagecreatefrompng($framePath);
+        $frameW = imagesx($frame);
+        $frameH = imagesy($frame);
+
+        $source = imagecreatefromstring(file_get_contents($fullPath));
+        $srcW   = imagesx($source);
+        $srcH   = imagesy($source);
+
+        // Cover-fit: determine which portion of the source to use so the result
+        // fills the frame exactly without distortion (center-crop).
+        $frameRatio = $frameW / $frameH;
+        $srcRatio   = $srcW   / $srcH;
+
+        if ($srcRatio > $frameRatio) {
+            // Source is wider — fit by height, crop sides
+            $cropH   = $srcH;
+            $cropW   = (int) round($srcH * $frameRatio);
+            $cropX   = (int) round(($srcW - $cropW) / 2);
+            $cropY   = 0;
+        } else {
+            // Source is taller — fit by width, crop top/bottom
+            $cropW   = $srcW;
+            $cropH   = (int) round($srcW / $frameRatio);
+            $cropX   = 0;
+            $cropY   = (int) round(($srcH - $cropH) / 2);
+        }
+
+        $canvas = imagecreatetruecolor($frameW, $frameH);
+        imagealphablending($canvas, true);
+        imagesavealpha($canvas, true);
+
+        // Scale cropped source region into the canvas
+        imagecopyresampled($canvas, $source, 0, 0, $cropX, $cropY, $frameW, $frameH, $cropW, $cropH);
+
+        // Composite frame on top (frame PNG has transparent window for the photo)
+        imagealphablending($canvas, true);
+        imagecopy($canvas, $frame, 0, 0, 0, 0, $frameW, $frameH);
+
+        imagepng($canvas, $fullPath);
+
+        imagedestroy($frame);
+        imagedestroy($source);
+        imagedestroy($canvas);
+
+        clearstatcache(true, $fullPath);
+
+        $asset->update([
+            'width'      => $frameW,
+            'height'     => $frameH,
+            'mime_type'  => 'image/png',
+            'size_bytes' => filesize($fullPath),
+        ]);
+    }
+
     // ── Deletion ──────────────────────────────────────────────────────────────
 
     public function deleteAsset(SubmissionAsset $asset): void

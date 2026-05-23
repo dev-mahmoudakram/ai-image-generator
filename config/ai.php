@@ -36,8 +36,8 @@ return [
 
     'pollinations' => [
         'model'  => env('POLLINATIONS_MODEL', 'flux-realism'),
-        'width'  => (int) env('POLLINATIONS_WIDTH', 1024),
-        'height' => (int) env('POLLINATIONS_HEIGHT', 1024),
+        'width'  => (int) env('POLLINATIONS_WIDTH', 941),
+        'height' => (int) env('POLLINATIONS_HEIGHT', 1672),
     ],
 
     'upload' => [

@@ -78,6 +78,8 @@ class GenerateSubmissionImageJob implements ShouldQueue
                 ? $storage->storeGeneratedImage($submission, $result->response)
                 : $storage->storeRawImage($submission, $result->imageBytes);
 
+            $storage->applyFrame($generatedAsset);
+
             $attempt->update([
                 'status'             => 'completed',
                 'generated_asset_id' => $generatedAsset->id,
