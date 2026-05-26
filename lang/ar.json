@@ -195,5 +195,7 @@
   "status_label.processing": "جارٍ المعالجة",
   "status_label.completed": "مكتمل",
   "status_label.failed": "فاشل",
-  "status_label.cancelled": "ملغى"
+  "status_label.cancelled": "ملغى",
+
+  "wizard.phone_already_submitted": "هذا الرقم سبق أن أرسل طلباً. يمكنك متابعة طلبك عبر رابط التتبع المُرسَل إليك."
 }

@@ -2,9 +2,11 @@
 
 namespace App\Livewire;
 
+use App\Models\Contact;
 use App\Models\Submission;
 use App\Models\Template;
 use App\Rules\ValidPhoneNumber;
+use App\Services\PhoneNumberService;
 use App\Services\SubmissionService;
 use Illuminate\View\View;
 use Livewire\Attributes\Layout;
@@ -37,6 +39,14 @@ class SubmissionWizard extends Component
             'email'   => ['nullable', 'email', 'max:255'],
             'consent' => ['accepted'],
         ]);
+
+        $e164    = app(PhoneNumberService::class)->toE164($this->phone);
+        $contact = Contact::where('phone', $e164)->first();
+
+        if ($contact && $contact->submissions()->exists()) {
+            $this->addError('phone', __('wizard.phone_already_submitted'));
+            return;
+        }
 
         $submission = app(SubmissionService::class)->start(
             ['name' => $this->name, 'phone' => $this->phone, 'email' => $this->email],

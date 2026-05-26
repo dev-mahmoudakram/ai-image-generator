@@ -15,7 +15,7 @@ class SubmissionController extends Controller
     public function index(): View
     {
         $submissions = Submission::with(['contact', 'template'])
-            ->oldest()
+            ->latest()
             ->paginate(10);
 
         return view('admin.submissions.index', compact('submissions'));

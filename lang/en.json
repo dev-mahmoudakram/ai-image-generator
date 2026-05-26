@@ -195,5 +195,7 @@
   "status_label.processing": "Processing",
   "status_label.completed": "Completed",
   "status_label.failed": "Failed",
-  "status_label.cancelled": "Cancelled"
+  "status_label.cancelled": "Cancelled",
+
+  "wizard.phone_already_submitted": "This number has already submitted a request. You can track your submission using the link sent to you."
 }
